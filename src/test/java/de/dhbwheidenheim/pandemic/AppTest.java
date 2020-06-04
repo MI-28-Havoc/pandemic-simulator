@@ -1,4 +1,6 @@
-package de.dhbw-heidenheim.pandemic;
+package de.dhbwheidenheim.pandemic
+
+-heidenheim.pandemic;
 
 import static org.junit.Assert.assertTrue;
 

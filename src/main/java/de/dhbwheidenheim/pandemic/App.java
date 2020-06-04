@@ -1,4 +1,4 @@
-package de.dhbw-heidenheim.pandemic;
+package de.dhbwheidenheim.pandemic;
 
 /**
  * Hello world!
