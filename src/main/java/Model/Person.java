@@ -14,7 +14,7 @@ public class Person {
 
     boolean infected; //Wenn true, dann noch nicht erkrankt, sondern Beginn Inkubationszeit
     boolean asymptomatic = false; //Vllt noch verwenden?
-    boolean recovered = false; //Damit auch Immun?
+    boolean recovered = false; //Damit auch Immun ?
     boolean dead = false;
     boolean inRiskGroup = false;
     int incubationPeriod;   //Für jede Person individuell
