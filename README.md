@@ -1,0 +1,2 @@
+# pandemic-simulator
+Simulator für das Ausbreitungsgeschehen einer Pandemie. Eine grafische Animation mit sich bewegenden Punkten simuliert Personen, die sich zufällig treffen. Mit einer gewissen Wahrscheinlichkeit findet eine Ansteckung statt. Nach einer gewissen Zeit folgt Tod, oder Genesung mit Immunität. Die statistischen Evidenzen (Zählwerte) werden für jeden Zeitpunkt ermittelt und in ein Diagramm eingetragen. 
