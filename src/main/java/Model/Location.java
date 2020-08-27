@@ -1,13 +1,26 @@
 package Model;
 
 import java.util.ArrayList;
+
+import javax.swing.JPanel;
+
 import static Controller.SimulatorConfig.*;
 
-public class Location {
+public class Location extends JPanel{
     ArrayList<Person> presentPersons = new ArrayList<>();
+    private int x;
+	private int y;
+
+	 public void setx(int i ){
+	     x = i;
+	 }
+	 public void sety(int i ){
+	     y = i;
+	 }
+    
     public void spread () {
         int infectiousPersons = 0;
-        for(Person aPerson: presentPersons) {
+        /*for(Person aPerson: presentPersons) {
             if (IS_INFECTIOUS_IN_INCUBATION_PERIOD) {
                 if (aPerson.isInfected()) {
                     infectiousPersons++;
@@ -31,6 +44,6 @@ public class Location {
                     forEach(
                             aPerson -> aPerson.setInfected((Math.random() < finalProbInfectionAtThisLocation))
                     );
-        }
+        }*/
     }
 }
