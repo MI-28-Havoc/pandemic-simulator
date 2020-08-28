@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 
@@ -20,14 +21,14 @@ public class Location extends JPanel{
     
     public void spread () {
         int infectiousPersons = 0;
-        /*for(Person aPerson: presentPersons) {
+        for(Person aPerson: presentPersons) {
             if (IS_INFECTIOUS_IN_INCUBATION_PERIOD) {
                 if (aPerson.isInfected()) {
                     infectiousPersons++;
                 }
             }
             else {
-                if (aPerson.isInfected() && aPerson.pastIncubationPeriod) {
+                if (aPerson.isInfected() && aPerson.hasPassedIncubationPeriod) {
                     infectiousPersons++;
                 }
             }
@@ -40,10 +41,15 @@ public class Location extends JPanel{
             }
 
             double finalProbInfectionAtThisLocation = probInfectionAtThisLocation; //Ist nötig, da in Lambda-Expressions nur final-Variablen erlaubt sind
-            presentPersons.stream().filter(aPerson->!aPerson.isInfected()).
-                    forEach(
-                            aPerson -> aPerson.setInfected((Math.random() < finalProbInfectionAtThisLocation))
-                    );
-        }*/
+            for(Person aPerson : presentPersons.stream().filter(aPerson->!aPerson.isInfected()).collect(Collectors.toList())) {
+                if (Math.random() < finalProbInfectionAtThisLocation) {
+                    aPerson.infect();
+                }
+            }
+        }
+    }
+
+    public boolean containsPersons() {
+	     return (presentPersons.size() > 0);
     }
 }

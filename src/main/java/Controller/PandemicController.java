@@ -2,11 +2,11 @@ package Controller;
 
 import Model.Location;
 import Model.Person;
-import static Controller.SimulatorConfig.*;
+
 import java.util.ArrayList;
 
 public class PandemicController {
-    ArrayList<Person> idioten = new ArrayList<>();
+    ArrayList<Person> persons = new ArrayList<>();
     ArrayList<Location> locations = new ArrayList<>();
     /*TODO:
         -> Tick machen, also nächsten Tag ansetzen mit Time.nextDay
@@ -16,7 +16,7 @@ public class PandemicController {
      */
     public void tick() {
         Time.nextDay();
-        for(Person aPerson: idioten) {
+        for(Person aPerson: persons) {
             if (aPerson.isInfected())
                 aPerson.checkCondition();
         }
@@ -25,5 +25,9 @@ public class PandemicController {
             if (aLocation.containsPersons())
                 aLocation.spread();
         }
+    }
+
+    public PandemicController (){
+        //Objekte erstellen
     }
 }

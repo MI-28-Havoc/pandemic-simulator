@@ -23,6 +23,7 @@ public class Person {
     int infectedAtDay = 0;  //Tag der Infizierung
     int illnessAtDay = 0; //Tag Beginn der Erkrankung
     boolean illnessBegun = false;  //Inkubation abgeschlossen, Person ist erkrankt
+    boolean hasPassedIncubationPeriod = false;
 
 
     public Person () {
