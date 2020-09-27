@@ -22,11 +22,11 @@ public class PandemicDisease extends JPanel{
 	    g.setPaint(new Color(0,0,0));
 	    //g.drawLine(x+10,y+10,500,y+10); //X
 	    //g.drawLine(x+10,y+10,x+10,0); //Y
-	    g.setFont(new Font("Arial", Font.BOLD,20));  //Attribut, Größe in [pt]
+	    g.setFont(new Font("Arial", Font.BOLD,20));  //Attribut, Grï¿½ï¿½e in [pt]
 	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.75f));
 	    //Formel
 	    //g.drawString("f(x) = "+model.getA()+"*x^3 + "+model.getB()+"*x^2 + "+model.getC()+"*x + "+model.getD(),10,30);
-	    //g.drawLine(50, 950, 550, 950);	//x-Achse
+	    g.drawLine(50, 950, 550, 950);	//x-Achse
 	    g.drawLine(50, 950, 50, 600);	//y-Achse
 	    
 	    

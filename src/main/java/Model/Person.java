@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -22,7 +22,6 @@ public class Person extends JPanel{
     int age;
 
     @Setter(AccessLevel.NONE)
-    @Getter(AccessLevel.NONE)
     boolean infected; //Wenn true, dann noch nicht erkrankt, sondern Beginn Inkubationszeit
     boolean recovered = false; //Damit auch Immun ?
     boolean dead = false;
@@ -103,4 +102,24 @@ public class Person extends JPanel{
 	public void setPosY(int posY) {
 		this.posY = posY;
 	}
+
+    public void paintComponent(Graphics g, int x, int y) {
+        //Grün   : neutral
+        //Rot    : Krank
+        //Blau   : Genesen
+        //Schwarz: tot (aber nur für kurze Zeit/paar Ticks, danach weg vom Grid)
+        Graphics2D g2d = (Graphics2D) g;
+        if (this.isInfected()) {
+            g2d.setColor(Color.RED);
+        } else if (this.recovered) {
+            g2d.setColor(Color.BLUE);
+        } else if (this.dead) {
+            g2d.setColor(Color.BLACK);
+        }
+        else {
+            g2d.setColor(Color.GREEN);
+        }
+        g2d.fill(new Ellipse2D.Double(x, y, 10, 10));
+        g2d.translate(1,1);
+    }
 }

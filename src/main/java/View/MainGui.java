@@ -1,15 +1,12 @@
 package View;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,9 +21,6 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.BoxLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.RenderingHints;
 
 import javax.swing.JTextPane;
 
@@ -54,7 +48,7 @@ public class MainGui extends JFrame{
         	  loc.setYGrid(i);
         	  loc.setBackground(Color.white);
         	  panel_2.add(loc);
-        	  loc.setLayout(new GridLayout());
+        	  loc.setLayout(null);
         	  locations.add(loc);
            }
        }
@@ -79,19 +73,25 @@ public class MainGui extends JFrame{
 	   JPanel numbers = new JPanel();
 	   numbers.setLayout(new GridLayout(3,1));
 	   values.add(numbers);
-	   
+
 	   ImageIcon alive = new ImageIcon("src/main/resources/alive.png");
-		alive.setImage(alive.getImage().getScaledInstance(27,27, Image.SCALE_DEFAULT));	// 13,13 für das Grid oben
-		JLabel xml = new JLabel (alive);
+		alive.setImage(alive.getImage().getScaledInstance(27,27, Image.SCALE_DEFAULT));	// 13,13 fï¿½r das Grid oben
+		JLabel lblAlive = new JLabel (alive);
+		lblAlive.setText("Gesund:");
+
 		ImageIcon ill = new ImageIcon("src/main/resources/ill.png");
 		ill.setImage(ill.getImage().getScaledInstance(29,29, Image.SCALE_DEFAULT));
-		JLabel xml2 = new JLabel (ill);
+		JLabel lblInfected = new JLabel (ill);
+		lblInfected.setText("Infiziert:");
+
 		ImageIcon dead = new ImageIcon("src/main/resources/fatal.png");
 		dead.setImage(dead.getImage().getScaledInstance(29,29, Image.SCALE_DEFAULT));
-		JLabel xml3 = new JLabel (dead);
-		numbers.add(xml);
-		numbers.add(xml2);
-		numbers.add(xml3);
+		JLabel lblDead = new JLabel (dead);
+		lblDead.setText("Verstorben:");
+
+		numbers.add(lblAlive);
+		numbers.add(lblInfected);
+		numbers.add(lblDead);
 	  
 	   start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -99,10 +99,7 @@ public class MainGui extends JFrame{
 				for(Location l : locations) {
 					if (l.getXGrid() == p.getPosX() && l.getYGrid() == p.getPosY()) {
 						l.presentPersons.add(p);
-						ImageIcon alive = new ImageIcon("src/main/resources/alive.png");
-						alive.setImage(alive.getImage().getScaledInstance(13,13, Image.SCALE_DEFAULT));	// 13,13 für das Grid oben
-						JLabel testLabel = new JLabel (alive);
-						l.add(testLabel);
+						p.paintComponent(getGraphics(), l.getX()+getRandomNumberInRange(15,105), l.getY()+getRandomNumberInRange(35,50));
 					}
 					
 					
@@ -133,6 +130,16 @@ public class MainGui extends JFrame{
 	public static void main(String[] args) {
 		MainGui a = new MainGui();
 		a.setVisible(true);
+	}
+
+	private static int getRandomNumberInRange(int min, int max) {
+
+		if (min >= max) {
+			throw new IllegalArgumentException("max must be greater than min");
+		}
+
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
 	}
 }
 

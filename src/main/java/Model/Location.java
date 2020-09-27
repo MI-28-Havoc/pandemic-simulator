@@ -35,7 +35,7 @@ public class Location extends JPanel{
 	                }
 	            }
 	            else {
-	                if (aPerson.isInfected() && aPerson.hasPassedIncubationPeriod) {
+	                if (aPerson.isInfected() && aPerson.illnessBegun) {
 	                    infectiousPersons++;
 	                }
 	            }
