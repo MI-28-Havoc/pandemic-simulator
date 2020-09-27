@@ -5,7 +5,9 @@ import Model.Person;
 
 import java.util.ArrayList;
 
-public class PandemicController {
+import javax.swing.JPanel;
+
+public class PandemicController{
     ArrayList<Person> persons = new ArrayList<>();
     ArrayList<Location> locations = new ArrayList<>();
     /*TODO:

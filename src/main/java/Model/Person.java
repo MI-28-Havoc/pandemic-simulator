@@ -1,19 +1,28 @@
 package Model;
 
-import Controller.Time;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.Random;
+
+import javax.swing.JPanel;
+
+import Controller.Time;
 
 import static Controller.SimulatorConfig.*;
 
 @Data
-public class Person {
+public class Person extends JPanel{
     int posX;
     int posY;
     int age;
 
     @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     boolean infected; //Wenn true, dann noch nicht erkrankt, sondern Beginn Inkubationszeit
     boolean recovered = false; //Damit auch Immun ?
     boolean dead = false;
@@ -29,8 +38,8 @@ public class Person {
     boolean illnessBegun = false;  //Inkubation abgeschlossen, Person ist erkrankt
 
 
-    public Person() {
-        //Individuelle Werte ermitteln...
+    public Person () {
+    	//Individuelle Werte ermitteln...
         this.age = (int) (Math.random() * 88) + 12;
         this.inRiskGroup = (Math.random() < PROB_PERSON_IS_IN_RISK_GROUP);
         this.incubationPeriod = (int) (Math.random() * (MAX_INCUBATION_PERIOD_DAYS - MIN_INCUBATION_PERIOD_DAYS) + MIN_INCUBATION_PERIOD_DAYS);
@@ -39,13 +48,17 @@ public class Person {
         this.infected = false;
         this.recovered = false;
         this.dead = false;
+        
+        this.posX = getRandomNumberInRange(1,10);	//variabel machen?!
+        this.posY = getRandomNumberInRange(1,10);
+        System.out.println(this.posX + ", " + this.posY);
     }
-
+    
     public void infect() {
         this.infected = true;
         this.infectedAtDay = Time.getCurrentDay();
     }
-
+    
     public void checkCondition() {
         //Inkubationszeit prüfen
         if (Time.getCurrentDay() > this.infectedAtDay + this.incubationPeriod) {
@@ -64,4 +77,30 @@ public class Person {
             this.infected = false; //Resetten, damit diese Person nicht mehr überprüft wird
         }
     }
+	
+	private static int getRandomNumberInRange(int min, int max) {
+
+		if (min >= max) {
+			throw new IllegalArgumentException("max must be greater than min");
+		}
+
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
+	}
+
+	public int getPosX() {
+		return posX;
+	}
+
+	public void setPosX(int posX) {
+		this.posX = posX;
+	}
+
+	public int getPosY() {
+		return posY;
+	}
+
+	public void setPosY(int posY) {
+		this.posY = posY;
+	}
 }
