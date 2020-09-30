@@ -47,10 +47,6 @@ public class Person extends JPanel{
         this.infected = false;
         this.recovered = false;
         this.dead = false;
-        
-        this.posX = getRandomNumberInRange(1,10);	//variabel machen?!
-        this.posY = getRandomNumberInRange(1,10);
-        System.out.println(this.posX + ", " + this.posY);
     }
     
     public void infect() {
@@ -76,18 +72,8 @@ public class Person extends JPanel{
             this.infected = false; //Resetten, damit diese Person nicht mehr überprüft wird
         }
     }
-	
-	private static int getRandomNumberInRange(int min, int max) {
 
-		if (min >= max) {
-			throw new IllegalArgumentException("max must be greater than min");
-		}
-
-		Random r = new Random();
-		return r.nextInt((max - min) + 1) + min;
-	}
-
-	public int getPosX() {
+    public int getPosX() {
 		return posX;
 	}
 
@@ -109,7 +95,7 @@ public class Person extends JPanel{
         //Blau   : Genesen
         //Schwarz: tot (aber nur für kurze Zeit/paar Ticks, danach weg vom Grid)
         Graphics2D g2d = (Graphics2D) g;
-        if (this.isInfected()) {
+        if (this.infected) {
             g2d.setColor(Color.RED);
         } else if (this.recovered) {
             g2d.setColor(Color.BLUE);

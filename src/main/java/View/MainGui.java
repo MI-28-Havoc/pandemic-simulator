@@ -6,7 +6,10 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -95,24 +98,108 @@ public class MainGui extends JFrame{
 	  
 	   start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Person p = new Person();
+				//Person p = new Person();
 				for(Location l : locations) {
-					if (l.getXGrid() == p.getPosX() && l.getYGrid() == p.getPosY()) {
+					for (int i = 0; i < getRandomNumberInRange(0, 4); i++) {
+						Person p = new Person();
+						p.setPosX(l.getXGrid());
+						p.setPosY(l.getYGrid());
 						l.presentPersons.add(p);
-						p.paintComponent(getGraphics(), l.getX()+getRandomNumberInRange(15,105), l.getY()+getRandomNumberInRange(35,50));
+						int locX = l.getX()+getRandomNumberInRange(15,105);
+						int locY = l.getY()+getRandomNumberInRange(35,50);
+						p.setLocation(locX, locY);
+						p.paintComponent(getGraphics(), locX, locY);
 					}
 					
-					
 				}
-				pd.initialPaint(getGraphics());
+				ticktest();
+				//pd.initialPaint(getGraphics());
 			}
 		});
-	   
-	   
-	   
-	   
-	   
 	}
+	
+	public void ticktest() {
+		// akzeptiert die Änderung von presentPersons in der aktuellen Location nicht !?
+		for(Location l : locations) {
+			ArrayList<Person> gonePersons = new ArrayList<>();
+			if (!l.presentPersons.isEmpty()) {
+			for (Person p: l.presentPersons) {
+				int newX = p.getPosX() + getRandomNumberInRange(-1, 1);
+				int newY = p.getPosY() + getRandomNumberInRange(-1, 1);
+				if (0 < newX && newX <= this.x && 0 < newY && newY <= this.y && (newX != p.getX() || newY != p.getY())) {
+					int deltaX = newX - p.getPosX();
+					int deltaY = newY -p.getPosY();
+					Optional<Location> test = locations.stream().filter(Location -> (newX == Location.getXGrid() && newY == Location.getYGrid())).findAny();
+					gonePersons.add(p);
+					p.setPosX(newX);
+					p.setPosY(newY);
+					test.get().presentPersons.add(p);
+					//block von unten hier rein
+					}
+				
+				}
+			
+				//p.paintComponent(getGraphics(), l.getX()+getRandomNumberInRange(15,105), l.getY()+getRandomNumberInRange(35,50));
+			}
+			
+			l.presentPersons.removeAll(gonePersons);
+		}
+	}
+	
+	
+//Block von unten:
+	/*int destX = p.getX() + 49 * deltaX;
+	int destY = p.getY() + 125 * deltaY;
+	while (destX != p.getX() || destY != p.getY()) {
+		int currentX = p.getX();
+		int currentY = p.getY();
+		if (destX < currentX && destY < currentY) {
+			currentX -= 1;
+			currentY -= 1;
+			p.setLocation(currentX, currentY);
+			
+		}
+		else if(destX > currentX && destY > currentY) {
+			currentX += 1;
+			currentY += 1;
+			p.setLocation(currentX, currentY);
+			
+		}
+		else if(destY < currentY && destX > currentX) {
+			currentY -= 1;
+			currentX += 1;
+			p.setLocation(currentX, currentY);
+			
+		}
+		else if(destY > currentY && destX < currentX ) {
+			currentY += 1;
+			currentX -= 1;
+			p.setLocation(currentX, currentY);
+			
+		}
+		else if(destY == currentY && destX < currentX ) {
+			currentX -= 1;
+			p.setLocation(currentX, currentY);
+			
+		}
+		else if(destY == currentY && destX > currentX ) {
+			currentX += 1;
+			p.setLocation(currentX, currentY);
+			
+		}
+		else if(destY > currentY && destX == currentX ) {
+			currentY += 1;
+			p.setLocation(currentX, currentY);
+			
+		}
+		else if(destY < currentY && destX == currentX ) {
+			currentY -= 1;
+			p.setLocation(currentX, currentY);
+			
+		}
+		p.repaint();
+	}*/
+	
 	
 	public void buildGui(){
 		setTitle("Pandemic Simulator");
