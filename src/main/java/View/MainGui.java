@@ -3,6 +3,8 @@ package View;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
@@ -23,7 +25,7 @@ import Model.Person;
 import javax.swing.ImageIcon;
 
 
-public class MainGui extends JFrame{
+public class MainGui extends JFrame implements ComponentListener{
 	//Feld soll erstmal 6x6 sein
 	int x = 10;
 	int y = 10;
@@ -35,6 +37,7 @@ public class MainGui extends JFrame{
 	   getContentPane().add(panel_2);
 	   panel_2.setLayout(new GridLayout(x, y, 1, 1));
 	   panel_2.setBackground(Color.black); //= Farbe der Cellborder
+	   //panel_2.addComponentListener(this);
 	  
 	   for (int i = 1; i <= x; i++) {
            for (int j = 1; j <= y; j++) {
@@ -68,6 +71,7 @@ public class MainGui extends JFrame{
 	   JPanel numbers = new JPanel();
 	   numbers.setLayout(new GridLayout(3,1));
 	   values.add(numbers);
+	   numbers.addComponentListener(this);
 
 	   ImageIcon alive = new ImageIcon("src/main/resources/alive.png");
 		alive.setImage(alive.getImage().getScaledInstance(27,27, Image.SCALE_DEFAULT));	// 13,13 f�r das Grid oben
@@ -271,7 +275,7 @@ public class MainGui extends JFrame{
 		instance = new MainGui();
 		instance.setVisible(true);
 		controller = new PandemicController();
-		PandemicController.spawnPersons();
+		//PandemicController.spawnPersons();
 	}
 
 	public static int getRandomNumberInRange(int min, int max) {
@@ -282,6 +286,34 @@ public class MainGui extends JFrame{
 
 		Random r = new Random();
 		return r.nextInt((max - min) + 1) + min;
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+		System.out.println("Ja1");
+		PandemicController.spawnPersons();
+		
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+		System.out.println("Ja2");
+		PandemicController.spawnPersons();
+		
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+		System.out.println("Ja3");
+		PandemicController.spawnPersons();
+		
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
+		System.out.println("Ja4");
+		PandemicController.spawnPersons();
+		
 	}
 }
 
