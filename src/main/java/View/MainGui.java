@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import static Controller.PandemicController.locations;
 import static Controller.PandemicController.spawnPersons;
@@ -290,29 +291,22 @@ public class MainGui extends JFrame implements ComponentListener{
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		System.out.println("Ja1");
-		PandemicController.spawnPersons();
 		
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
-		System.out.println("Ja2");
-		PandemicController.spawnPersons();
+		SwingUtilities.invokeLater(() -> PandemicController.spawnPersons());
 		
 	}
 
 	@Override
 	public void componentShown(ComponentEvent e) {
-		System.out.println("Ja3");
-		PandemicController.spawnPersons();
 		
 	}
 
 	@Override
 	public void componentHidden(ComponentEvent e) {
-		System.out.println("Ja4");
-		PandemicController.spawnPersons();
 		
 	}
 }
