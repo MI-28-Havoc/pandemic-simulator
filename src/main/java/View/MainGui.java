@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
@@ -15,8 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import static Controller.PandemicController.locations;
-import static Controller.PandemicController.spawnPersons;
+import static Controller.PandemicController.*;
 
 import Controller.PandemicController;
 import Model.Location;
@@ -26,8 +26,7 @@ import Model.Person;
 import javax.swing.ImageIcon;
 
 
-public class MainGui extends JFrame implements ComponentListener{
-	//Feld soll erstmal 6x6 sein
+public class MainGui extends JFrame implements ComponentListener {
 	int x = 10;
 	int y = 10;
 
@@ -95,7 +94,6 @@ public class MainGui extends JFrame implements ComponentListener{
 	  
 	   start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				spawnPersons();
 				//Personen initial spawnen...
 
 				/*MOVED ZU PANDEMICCONTROLLER
@@ -112,13 +110,29 @@ public class MainGui extends JFrame implements ComponentListener{
 					}
 
 				}*/
-				//ticktest();
+
+				Thread appThread = new Thread() {
+					public void run() {
+						while (amountInfected != 0) {
+							relocatePersons();
+							try {
+								SwingUtilities.invokeAndWait(() -> PandemicController.refreshGrid());
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							} catch (InvocationTargetException e) {
+								e.printStackTrace();
+							}
+						}
+						System.out.println("Finished on " + Thread.currentThread());
+					}
+				};
+				appThread.start();
 				//pd.initialPaint(getGraphics());
 			}
 		});
 	}
 	
-	public void ticktest() {
+	public void relocatePersons() {
 		// akzeptiert die Änderung von presentPersons in der aktuellen Location nicht !?
 		//alle Locations iterieren und für jede Person darin eine neue Location ermitteln...
 		for(Location l : locations) {
@@ -137,8 +151,11 @@ public class MainGui extends JFrame implements ComponentListener{
 
 						test.get().presentPersons.add(p);
 						//START Block von unten:
-						int destX = p.getPosX() + 49 * directionX;
-						int destY = p.getPosY() + 125 * directionY;
+						int destX = p.getPosX() + 125 * directionX;
+						int destY = p.getPosY() + 49 * directionY;
+						p.setPosX(destX);
+						p.setPosY(destY);
+						/*
 
 						int currentX = p.getPosX();
 						int currentY = p.getPosY();
@@ -192,6 +209,7 @@ public class MainGui extends JFrame implements ComponentListener{
 							}
 							//p.repaint();
 						}
+						*/
 						//ENDE Block von unten:
 					}
 
@@ -296,8 +314,12 @@ public class MainGui extends JFrame implements ComponentListener{
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
-		SwingUtilities.invokeLater(() -> PandemicController.spawnPersons());
-		
+		SwingUtilities.invokeLater(() -> {
+			PandemicController.spawnPersons();
+			PandemicController.setPatientZero();
+		}
+		);
+
 	}
 
 	@Override

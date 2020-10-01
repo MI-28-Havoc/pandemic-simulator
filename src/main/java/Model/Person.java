@@ -14,6 +14,7 @@ import javax.swing.*;
 import Controller.Time;
 
 import static Controller.SimulatorConfig.*;
+import static Controller.PandemicController.amountInfected;
 
 @Data
 public class Person extends JPanel {
@@ -49,6 +50,8 @@ public class Person extends JPanel {
         this.infected = false;
         this.recovered = false;
         this.dead = false;
+        this.setVisible(true);
+        this.setLayout(null);
     }
     
     public void infect() {
@@ -71,6 +74,7 @@ public class Person extends JPanel {
                 this.recovered = true;
                 this.recoveredAtDay = Time.getCurrentDay();
             }
+            amountInfected--;
             this.infected = false; //Resetten, damit diese Person nicht mehr überprüft wird
         }
     }
@@ -91,7 +95,7 @@ public class Person extends JPanel {
 		this.posY = posY;
 	}
 
-    public void paint(int x, int y) {
+    public void paintComponent(int x, int y) {
         //Grün   : neutral
         //Rot    : Krank
         //Blau   : Genesen
@@ -106,7 +110,24 @@ public class Person extends JPanel {
         else {
             visualPerson.setColor(Color.GREEN);
         }
-        visualPerson.fill(new Ellipse2D.Double(x, y, 10, 10));
-        visualPerson.translate(x,y);
+        visualPerson.fill(new Ellipse2D.Double(x, y, CIRCLE_WIDTH, CIRCLE_HEIGHT));
+        this.setBounds(x, y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+        //visualPerson.translate(x,y);
+    }
+
+    public void refreshComponent() {
+        if (this.infected) {
+            visualPerson.setColor(Color.RED);
+        } else if (this.recovered) {
+            visualPerson.setColor(Color.BLUE);
+        } else if (this.dead) {
+            visualPerson.setColor(Color.BLACK);
+        }
+        else {
+            visualPerson.setColor(Color.GREEN);
+        }
+        this.setBounds(posX, posY, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+        this.revalidate();
+        this.repaint();
     }
 }

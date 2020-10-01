@@ -6,12 +6,14 @@ import Model.Person;
 import java.awt.*;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static View.MainGui.getRandomNumberInRange;
 import static View.MainGui.instance;
 
 public class PandemicController{
     public static ArrayList<Location> locations = new ArrayList<>();
+    public static int amountInfected = 0;
     /*TODO:
         -> Tick machen, also nächsten Tag ansetzen mit Time.nextDay (DONE)
         -> Dann jede Person ticken(gucken ob incubPeriod vorüber -> pastIncub = true usw.)
@@ -70,6 +72,7 @@ public class PandemicController{
     }
     public static void spawnPersons() {
         //Personen initial spawnen...
+        boolean patientZeroIsSet = false;
         for(Location l : locations) {
             for (int i = 0; i < getRandomNumberInRange(0, 4); i++) {
                 Person p = new Person(instance.getGraphics());
@@ -79,8 +82,32 @@ public class PandemicController{
                 p.setPosX(locX);
                 p.setPosY(locY);
                 //p.setLocation(locX, locY);
-                p.paint(locX, locY);
+                p.paintComponent(locX, locY);
+            }
+        }
+    }
 
+    public static void setPatientZero() {
+        //Random Zelle ermitteln...
+        int randomGridX = 0;
+        int randomGridY = 0;
+        Location randomLocation;
+        do {
+            randomGridX = getRandomNumberInRange(1,10);
+            randomGridY = getRandomNumberInRange(1,10);
+            int finalRandomGridX = randomGridX;
+            int finalRandomGridY = randomGridY;
+            randomLocation = locations.stream().filter(Location -> (finalRandomGridX == Location.getXGrid() && finalRandomGridY == Location.getYGrid())).findAny().get();
+        } while(randomLocation.presentPersons.size() == 0);
+        //Ab hier Zelle ermittelt mit mind. 1 Person drin
+        randomLocation.presentPersons.get(0).infect();
+        randomLocation.presentPersons.get(0).paintComponent(randomLocation.presentPersons.get(0).getPosX(),randomLocation.presentPersons.get(0).getPosY());
+    }
+
+    public static void refreshGrid() {
+        for(Location aLocation: locations) {
+            for(Person aPerson: aLocation.presentPersons) {
+                aPerson.refreshComponent();
             }
         }
     }

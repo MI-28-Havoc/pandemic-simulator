@@ -17,4 +17,8 @@ public class SimulatorConfig {
     public static int MAX_ILLNESS_PERIOD_DAYS = 3;                      //Erholung/Tod frühestens nach mind. x Tagen
     public static int MIN_ILLNESS_PERIOD_DAYS = 10;                     //Erholung/Tod spätestens nach max. x Tagen
     public static boolean IS_INFECTIOUS_IN_INCUBATION_PERIOD = true;    //False = Kann erst nach der Inkubationszeit andere Personen anstecken
+
+    //Darstellung
+    public static int CIRCLE_HEIGHT = 10;
+    public static int CIRCLE_WIDTH = 10;
 }
