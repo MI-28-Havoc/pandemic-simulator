@@ -3,29 +3,24 @@ package View;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Rectangle2D;
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 
+import static Controller.PandemicController.locations;
+import static Controller.PandemicController.spawnPersons;
+
+import Controller.PandemicController;
 import Model.Location;
 import Model.PandemicDisease;
 import Model.Person;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.ImageIcon;
-import javax.swing.BoxLayout;
 
-import javax.swing.JTextPane;
+import javax.swing.ImageIcon;
 
 
 public class MainGui extends JFrame{
@@ -33,11 +28,8 @@ public class MainGui extends JFrame{
 	int x = 10;
 	int y = 10;
 
-    ArrayList<Location> locations = new ArrayList<>();
 	public MainGui(){
 		buildGui();
-		
-		
 	   
 	   final JPanel panel_2 = new JPanel();
 	   getContentPane().add(panel_2);
@@ -52,7 +44,7 @@ public class MainGui extends JFrame{
         	  loc.setBackground(Color.white);
         	  panel_2.add(loc);
         	  loc.setLayout(null);
-        	  locations.add(loc);
+        	  PandemicController.locations.add(loc);
            }
        }
 	   
@@ -98,21 +90,24 @@ public class MainGui extends JFrame{
 	  
 	   start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//Person p = new Person();
+				spawnPersons();
+				//Personen initial spawnen...
+
+				/*MOVED ZU PANDEMICCONTROLLER
 				for(Location l : locations) {
 					for (int i = 0; i < getRandomNumberInRange(0, 4); i++) {
-						Person p = new Person();
+						Person p = new Person(getGraphics());
 						p.setPosX(l.getXGrid());
 						p.setPosY(l.getYGrid());
 						l.presentPersons.add(p);
 						int locX = l.getX()+getRandomNumberInRange(15,105);
 						int locY = l.getY()+getRandomNumberInRange(35,50);
 						p.setLocation(locX, locY);
-						p.paintComponent(getGraphics(), locX, locY);
+						p.paintComponent(locX, locY);
 					}
-					
-				}
-				ticktest();
+
+				}*/
+				//ticktest();
 				//pd.initialPaint(getGraphics());
 			}
 		});
@@ -120,25 +115,82 @@ public class MainGui extends JFrame{
 	
 	public void ticktest() {
 		// akzeptiert die Änderung von presentPersons in der aktuellen Location nicht !?
+		//alle Locations iterieren und für jede Person darin eine neue Location ermitteln...
 		for(Location l : locations) {
 			ArrayList<Person> gonePersons = new ArrayList<>();
 			if (!l.presentPersons.isEmpty()) {
-			for (Person p: l.presentPersons) {
-				int newX = p.getPosX() + getRandomNumberInRange(-1, 1);
-				int newY = p.getPosY() + getRandomNumberInRange(-1, 1);
-				if (0 < newX && newX <= this.x && 0 < newY && newY <= this.y && (newX != p.getX() || newY != p.getY())) {
-					int deltaX = newX - p.getPosX();
-					int deltaY = newY -p.getPosY();
-					Optional<Location> test = locations.stream().filter(Location -> (newX == Location.getXGrid() && newY == Location.getYGrid())).findAny();
-					gonePersons.add(p);
-					p.setPosX(newX);
-					p.setPosY(newY);
-					test.get().presentPersons.add(p);
-					//block von unten hier rein
+				for (Person p: l.presentPersons) {
+					//int newX = p.getPosX() + getRandomNumberInRange(-1, 1);
+					//int newY = p.getPosY() + getRandomNumberInRange(-1, 1);
+					int newXGrid = l.getXGrid() + getRandomNumberInRange(-1, 1);
+					int newYGrid = l.getYGrid() + getRandomNumberInRange(-1, 1);
+					if (0 < newXGrid && newXGrid <= this.x && 0 < newYGrid && newYGrid <= this.y && (newXGrid != l.getXGrid() || newYGrid != l.getYGrid())) {
+						int directionX = newXGrid - l.getXGrid();
+						int directionY = newYGrid - l.getYGrid();
+						Optional<Location> test = locations.stream().filter(Location -> (newXGrid == Location.getXGrid() && newYGrid == Location.getYGrid())).findAny();
+						gonePersons.add(p);
+
+						test.get().presentPersons.add(p);
+						//START Block von unten:
+						int destX = p.getPosX() + 49 * directionX;
+						int destY = p.getPosY() + 125 * directionY;
+
+						int currentX = p.getPosX();
+						int currentY = p.getPosY();
+
+						while (destX != currentX || destY != currentY) {
+
+							if (destX < currentX && destY < currentY) {
+								currentX -= 1;
+								currentY -= 1;
+								//p.setLocation(currentX, currentY);
+								p.paint(currentX, currentY);
+
+							} else if (destX > currentX && destY > currentY) {
+								currentX += 1;
+								currentY += 1;
+								//p.setLocation(currentX, currentY);
+								p.paint(currentX, currentY);
+
+							} else if (destY < currentY && destX > currentX) {
+								currentY -= 1;
+								currentX += 1;
+								//p.setLocation(currentX, currentY);
+								p.paint(currentX, currentY);
+
+							} else if (destY > currentY && destX < currentX) {
+								currentY += 1;
+								currentX -= 1;
+								//p.setLocation(currentX, currentY);
+								p.paint(currentX, currentY);
+
+							} else if (destY == currentY && destX < currentX) {
+								currentX -= 1;
+								//p.setLocation(currentX, currentY);
+								p.paint(currentX, currentY);
+
+							} else if (destY == currentY && destX > currentX) {
+								currentX += 1;
+								//p.setLocation(currentX, currentY);
+								p.paint(currentX, currentY);
+
+							} else if (destY > currentY && destX == currentX) {
+								currentY += 1;
+								//p.setLocation(currentX, currentY);
+								p.paint(currentX, currentY);
+
+							} else if (destY < currentY && destX == currentX) {
+								currentY -= 1;
+								//p.setLocation(currentX, currentY);
+								p.paint(currentX, currentY);
+
+							}
+							//p.repaint();
+						}
+						//ENDE Block von unten:
 					}
-				
+
 				}
-			
 				//p.paintComponent(getGraphics(), l.getX()+getRandomNumberInRange(15,105), l.getY()+getRandomNumberInRange(35,50));
 			}
 			
@@ -201,7 +253,7 @@ public class MainGui extends JFrame{
 	}*/
 	
 	
-	public void buildGui(){
+	public void buildGui() {
 		setTitle("Pandemic Simulator");
 		setSize(1250,1000);
 		setResizable(false);
@@ -213,13 +265,16 @@ public class MainGui extends JFrame{
 		JLabel caption = new JLabel("Pandemic Simulator");
 		JButton start = new JButton("Start");
 		
-	
+	public static MainGui instance;
+	public static PandemicController controller;
 	public static void main(String[] args) {
-		MainGui a = new MainGui();
-		a.setVisible(true);
+		instance = new MainGui();
+		instance.setVisible(true);
+		controller = new PandemicController();
+		PandemicController.spawnPersons();
 	}
 
-	private static int getRandomNumberInRange(int min, int max) {
+	public static int getRandomNumberInRange(int min, int max) {
 
 		if (min >= max) {
 			throw new IllegalArgumentException("max must be greater than min");

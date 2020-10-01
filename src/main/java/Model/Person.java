@@ -9,16 +9,17 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.util.Random;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import Controller.Time;
 
 import static Controller.SimulatorConfig.*;
 
 @Data
-public class Person extends JPanel{
+public class Person extends JPanel {
     int posX;
     int posY;
+    Graphics2D visualPerson;
     int age;
 
     @Setter(AccessLevel.NONE)
@@ -37,8 +38,9 @@ public class Person extends JPanel{
     boolean illnessBegun = false;  //Inkubation abgeschlossen, Person ist erkrankt
 
 
-    public Person () {
+    public Person (Graphics g) {
     	//Individuelle Werte ermitteln...
+        visualPerson = (Graphics2D) g;
         this.age = (int) (Math.random() * 88) + 12;
         this.inRiskGroup = (Math.random() < PROB_PERSON_IS_IN_RISK_GROUP);
         this.incubationPeriod = (int) (Math.random() * (MAX_INCUBATION_PERIOD_DAYS - MIN_INCUBATION_PERIOD_DAYS) + MIN_INCUBATION_PERIOD_DAYS);
@@ -89,23 +91,22 @@ public class Person extends JPanel{
 		this.posY = posY;
 	}
 
-    public void paintComponent(Graphics g, int x, int y) {
+    public void paint(int x, int y) {
         //Grün   : neutral
         //Rot    : Krank
         //Blau   : Genesen
         //Schwarz: tot (aber nur für kurze Zeit/paar Ticks, danach weg vom Grid)
-        Graphics2D g2d = (Graphics2D) g;
         if (this.infected) {
-            g2d.setColor(Color.RED);
+            visualPerson.setColor(Color.RED);
         } else if (this.recovered) {
-            g2d.setColor(Color.BLUE);
+            visualPerson.setColor(Color.BLUE);
         } else if (this.dead) {
-            g2d.setColor(Color.BLACK);
+            visualPerson.setColor(Color.BLACK);
         }
         else {
-            g2d.setColor(Color.GREEN);
+            visualPerson.setColor(Color.GREEN);
         }
-        g2d.fill(new Ellipse2D.Double(x, y, 10, 10));
-        g2d.translate(1,1);
+        visualPerson.fill(new Ellipse2D.Double(x, y, 10, 10));
+        visualPerson.translate(x,y);
     }
 }
