@@ -29,14 +29,16 @@ import javax.swing.ImageIcon;
 public class MainGui extends JFrame implements ComponentListener {
 	int x = 10;
 	int y = 10;
+	public final JPanel grid;
+	public final JPanel overlayGrid;
 
 	public MainGui(){
 		buildGui();
 	   
-	   final JPanel panel_2 = new JPanel();
-	   getContentPane().add(panel_2);
-	   panel_2.setLayout(new GridLayout(x, y, 1, 1));
-	   panel_2.setBackground(Color.black); //= Farbe der Cellborder
+	   grid = new JPanel();
+	   getContentPane().add(grid);
+	   grid.setLayout(new GridLayout(x, y, 1, 1));
+	   grid.setBackground(Color.black); //= Farbe der Cellborder
 	   //panel_2.addComponentListener(this);
 	  
 	   for (int i = 1; i <= x; i++) {
@@ -45,11 +47,17 @@ public class MainGui extends JFrame implements ComponentListener {
         	  loc.setXGrid(j);
         	  loc.setYGrid(i);
         	  loc.setBackground(Color.white);
-        	  panel_2.add(loc);
+        	  grid.add(loc);
         	  loc.setLayout(null);
         	  PandemicController.locations.add(loc);
            }
        }
+
+	   overlayGrid = new JPanel();
+	   overlayGrid.setLayout(null);
+	   overlayGrid.setBounds(0,0,0,0);
+	   overlayGrid.setVisible(true);
+	   getContentPane().add(overlayGrid);
 	   
 	   final JPanel graph = new JPanel();
 	   graph.setLayout(null);
@@ -115,6 +123,7 @@ public class MainGui extends JFrame implements ComponentListener {
 					public void run() {
 						while (amountInfected != 0) {
 							relocatePersons();
+							tick();
 							try {
 								SwingUtilities.invokeAndWait(() -> PandemicController.refreshGrid());
 							} catch (InterruptedException e) {
@@ -146,27 +155,35 @@ public class MainGui extends JFrame implements ComponentListener {
 					if (0 < newXGrid && newXGrid <= this.x && 0 < newYGrid && newYGrid <= this.y && (newXGrid != l.getXGrid() || newYGrid != l.getYGrid())) {
 						int directionX = newXGrid - l.getXGrid();
 						int directionY = newYGrid - l.getYGrid();
-						Optional<Location> test = locations.stream().filter(Location -> (newXGrid == Location.getXGrid() && newYGrid == Location.getYGrid())).findAny();
+						Optional<Location> newLocation = locations.stream().filter(Location -> (newXGrid == Location.getXGrid() && newYGrid == Location.getYGrid())).findAny();
 						gonePersons.add(p);
 
-						test.get().presentPersons.add(p);
+						newLocation.get().presentPersons.add(p);
 						//START Block von unten:
 						int destX = p.getPosX() + 125 * directionX;
 						int destY = p.getPosY() + 49 * directionY;
 						p.setPosX(destX);
 						p.setPosY(destY);
+						p.revalidate();
+						p.repaint();
+						/*TEST START
+						Graphics2D g = (Graphics2D) instance.getGraphics();
+						g.setColor(Color.magenta);
+						g.fill(new Ellipse2D.Double(destX, destY, CIRCLE_WIDTH, CIRCLE_HEIGHT));
+
+						p.setBounds(destX, destY, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+						//TEST ENDE */
 						/*
 
-						int currentX = p.getPosX();
-						int currentY = p.getPosY();
-
-						while (destX != currentX || destY != currentY) {
-
+						int destX = p.getX() + 49 * deltaX;
+						int destY = p.getY() + 125 * deltaY;
+						while (destX != p.getX() || destY != p.getY()) {
+							int currentX = p.getX();
+							int currentY = p.getY();
 							if (destX < currentX && destY < currentY) {
 								currentX -= 1;
 								currentY -= 1;
-								//p.setLocation(currentX, currentY);
-								p.paint(currentX, currentY);
+								p.setLocation(currentX, currentY);
 
 							} else if (destX > currentX && destY > currentY) {
 								currentX += 1;
@@ -220,60 +237,6 @@ public class MainGui extends JFrame implements ComponentListener {
 			l.presentPersons.removeAll(gonePersons);
 		}
 	}
-	
-	
-//Block von unten:
-	/*int destX = p.getX() + 49 * deltaX;
-	int destY = p.getY() + 125 * deltaY;
-	while (destX != p.getX() || destY != p.getY()) {
-		int currentX = p.getX();
-		int currentY = p.getY();
-		if (destX < currentX && destY < currentY) {
-			currentX -= 1;
-			currentY -= 1;
-			p.setLocation(currentX, currentY);
-			
-		}
-		else if(destX > currentX && destY > currentY) {
-			currentX += 1;
-			currentY += 1;
-			p.setLocation(currentX, currentY);
-			
-		}
-		else if(destY < currentY && destX > currentX) {
-			currentY -= 1;
-			currentX += 1;
-			p.setLocation(currentX, currentY);
-			
-		}
-		else if(destY > currentY && destX < currentX ) {
-			currentY += 1;
-			currentX -= 1;
-			p.setLocation(currentX, currentY);
-			
-		}
-		else if(destY == currentY && destX < currentX ) {
-			currentX -= 1;
-			p.setLocation(currentX, currentY);
-			
-		}
-		else if(destY == currentY && destX > currentX ) {
-			currentX += 1;
-			p.setLocation(currentX, currentY);
-			
-		}
-		else if(destY > currentY && destX == currentX ) {
-			currentY += 1;
-			p.setLocation(currentX, currentY);
-			
-		}
-		else if(destY < currentY && destX == currentX ) {
-			currentY -= 1;
-			p.setLocation(currentX, currentY);
-			
-		}
-		p.repaint();
-	}*/
 	
 	
 	public void buildGui() {

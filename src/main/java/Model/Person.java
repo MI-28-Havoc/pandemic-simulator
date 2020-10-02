@@ -61,7 +61,7 @@ public class Person extends JPanel {
     
     public void checkCondition() {
         //Inkubationszeit prüfen
-        if (Time.getCurrentDay() > this.infectedAtDay + this.incubationPeriod) {
+        if ((Time.getCurrentDay() > this.infectedAtDay + this.incubationPeriod) && !this.illnessBegun) {
             this.illnessBegun = true;
             illnessAtDay = Time.getCurrentDay();
         }
@@ -95,11 +95,13 @@ public class Person extends JPanel {
 		this.posY = posY;
 	}
 
-    public void paintComponent(int x, int y) {
+	@Override
+    public void paintComponent(final Graphics g) {
         //Grün   : neutral
         //Rot    : Krank
         //Blau   : Genesen
         //Schwarz: tot (aber nur für kurze Zeit/paar Ticks, danach weg vom Grid)
+        super.paintComponent(g);
         if (this.infected) {
             visualPerson.setColor(Color.RED);
         } else if (this.recovered) {
@@ -110,12 +112,13 @@ public class Person extends JPanel {
         else {
             visualPerson.setColor(Color.GREEN);
         }
-        visualPerson.fill(new Ellipse2D.Double(x, y, CIRCLE_WIDTH, CIRCLE_HEIGHT));
-        this.setBounds(x, y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+        visualPerson.fill(new Ellipse2D.Double(posX, posY, CIRCLE_WIDTH, CIRCLE_HEIGHT));
+        this.setBounds(posX, posY, CIRCLE_WIDTH, CIRCLE_HEIGHT);
         //visualPerson.translate(x,y);
     }
 
     public void refreshComponent() {
+        //obsolet
         if (this.infected) {
             visualPerson.setColor(Color.RED);
         } else if (this.recovered) {

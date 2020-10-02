@@ -6,7 +6,6 @@ import Model.Person;
 import java.awt.*;
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static View.MainGui.getRandomNumberInRange;
 import static View.MainGui.instance;
@@ -82,33 +81,41 @@ public class PandemicController{
                 p.setPosX(locX);
                 p.setPosY(locY);
                 //p.setLocation(locX, locY);
-                p.paintComponent(locX, locY);
+                p.setBounds(locX,locY,1,1);
+                instance.overlayGrid.add(p);
             }
         }
     }
 
     public static void setPatientZero() {
-        //Random Zelle ermitteln...
-        int randomGridX = 0;
-        int randomGridY = 0;
-        Location randomLocation;
-        do {
-            randomGridX = getRandomNumberInRange(1,10);
-            randomGridY = getRandomNumberInRange(1,10);
-            int finalRandomGridX = randomGridX;
-            int finalRandomGridY = randomGridY;
-            randomLocation = locations.stream().filter(Location -> (finalRandomGridX == Location.getXGrid() && finalRandomGridY == Location.getYGrid())).findAny().get();
-        } while(randomLocation.presentPersons.size() == 0);
-        //Ab hier Zelle ermittelt mit mind. 1 Person drin
-        randomLocation.presentPersons.get(0).infect();
-        randomLocation.presentPersons.get(0).paintComponent(randomLocation.presentPersons.get(0).getPosX(),randomLocation.presentPersons.get(0).getPosY());
+        if (amountInfected == 0) {
+            //Random Zelle ermitteln...
+            int randomGridX = 0;
+            int randomGridY = 0;
+            Location randomLocation;
+            do {
+                randomGridX = getRandomNumberInRange(1, 10);
+                randomGridY = getRandomNumberInRange(1, 10);
+                int finalRandomGridX = randomGridX;
+                int finalRandomGridY = randomGridY;
+                randomLocation = locations.stream().filter(Location -> (finalRandomGridX == Location.getXGrid() && finalRandomGridY == Location.getYGrid())).findAny().get();
+            } while (randomLocation.presentPersons.size() == 0);
+            //Ab hier Zelle ermittelt mit mind. 1 Person drin
+            randomLocation.presentPersons.get(0).infect();
+            //RAUS TEST randomLocation.presentPersons.get(0).paintComponent(randomLocation.presentPersons.get(0).getPosX(), randomLocation.presentPersons.get(0).getPosY());
+            amountInfected = 1;
+        }
     }
 
     public static void refreshGrid() {
-        for(Location aLocation: locations) {
+        /*for(Location aLocation: locations) {
             for(Person aPerson: aLocation.presentPersons) {
                 aPerson.refreshComponent();
             }
-        }
+        }*/
+        instance.grid.revalidate();
+        instance.grid.repaint();
+        instance.overlayGrid.revalidate();
+        instance.overlayGrid.repaint();
     }
 }
