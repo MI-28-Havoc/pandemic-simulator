@@ -3,6 +3,7 @@ package Controller;
 import Model.Location;
 import Model.Person;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -13,6 +14,11 @@ import static View.MainGui.instance;
 public class PandemicController{
     public static ArrayList<Location> locations = new ArrayList<>();
     public static int amountInfected = 0;
+    public static int amountAlive = 0;
+    public static int amountRecovered = 0;
+    public static int amountDead = 0;
+
+
     /*TODO:
         -> Tick machen, also nächsten Tag ansetzen mit Time.nextDay (DONE)
         -> Dann jede Person ticken(gucken ob incubPeriod vorüber -> pastIncub = true usw.)
@@ -73,17 +79,19 @@ public class PandemicController{
         //Personen initial spawnen...
         boolean patientZeroIsSet = false;
         for(Location l : locations) {
-            for (int i = 0; i < getRandomNumberInRange(0, 4); i++) {
+            for (int i = 0; i < getRandomNumberInRange(0, 200); i++) { //TODO lol
                 Person p = new Person(instance.getGraphics());
                 l.presentPersons.add(p);
-                int locX = l.getX()+getRandomNumberInRange(15,105);
-                int locY = l.getY()+getRandomNumberInRange(35,50);
+                int locX = l.getX()+getRandomNumberInRange(10,l.getWidth()-10);
+                int locY = l.getY()+getRandomNumberInRange(30,l.getHeight()+20);
                 p.setPosX(locX);
                 p.setPosY(locY);
-                //p.setLocation(locX, locY);
-                p.setBounds(locX,locY,1,1);
-                instance.overlayGrid.add(p);
+                p.setBounds(0,0,10,10);
+                l.add(p);
+                p.paintComponent(instance.getGraphics());
+
             }
+
         }
     }
 
@@ -103,7 +111,8 @@ public class PandemicController{
             //Ab hier Zelle ermittelt mit mind. 1 Person drin
             randomLocation.presentPersons.get(0).infect();
             //RAUS TEST randomLocation.presentPersons.get(0).paintComponent(randomLocation.presentPersons.get(0).getPosX(), randomLocation.presentPersons.get(0).getPosY());
-            amountInfected = 1;
+            randomLocation.presentPersons.get(0).revalidate();
+            randomLocation.presentPersons.get(0).repaint();
         }
     }
 
@@ -113,9 +122,15 @@ public class PandemicController{
                 aPerson.refreshComponent();
             }
         }*/
+        instance.lblAliveValue.setText(String.valueOf(amountAlive));
+        instance.lblInfectedValue.setText(String.valueOf(amountInfected));
+        instance.lblDeadValue.setText(String.valueOf(amountDead));
+        instance.lblRecoveredValue.setText(String.valueOf(amountRecovered));
+
+
         instance.grid.revalidate();
         instance.grid.repaint();
-        instance.overlayGrid.revalidate();
-        instance.overlayGrid.repaint();
+        instance.overview.revalidate();
+        instance.overview.repaint();
     }
 }

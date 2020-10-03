@@ -13,8 +13,8 @@ import javax.swing.*;
 
 import Controller.Time;
 
+import static Controller.PandemicController.*;
 import static Controller.SimulatorConfig.*;
-import static Controller.PandemicController.amountInfected;
 
 @Data
 public class Person extends JPanel {
@@ -46,17 +46,19 @@ public class Person extends JPanel {
         this.inRiskGroup = (Math.random() < PROB_PERSON_IS_IN_RISK_GROUP);
         this.incubationPeriod = (int) (Math.random() * (MAX_INCUBATION_PERIOD_DAYS - MIN_INCUBATION_PERIOD_DAYS) + MIN_INCUBATION_PERIOD_DAYS);
         this.illnessPeriod = (int) (Math.random() * (MIN_ILLNESS_PERIOD_DAYS - MAX_ILLNESS_PERIOD_DAYS) + MAX_ILLNESS_PERIOD_DAYS);
-
+        this.setBackground(null);
         this.infected = false;
         this.recovered = false;
         this.dead = false;
         this.setVisible(true);
         this.setLayout(null);
+        amountAlive++;
     }
     
     public void infect() {
         this.infected = true;
         this.infectedAtDay = Time.getCurrentDay();
+        amountInfected++;
     }
     
     public void checkCondition() {
@@ -70,9 +72,12 @@ public class Person extends JPanel {
             if (Math.random() < PROB_BASIC_FATALITY) {
                 this.dead = true;
                 this.deathAtDay = Time.getCurrentDay();
+                amountDead++;
+                amountAlive--;
             } else {
                 this.recovered = true;
                 this.recoveredAtDay = Time.getCurrentDay();
+                amountRecovered++;
             }
             amountInfected--;
             this.infected = false; //Resetten, damit diese Person nicht mehr überprüft wird
@@ -113,7 +118,6 @@ public class Person extends JPanel {
             visualPerson.setColor(Color.GREEN);
         }
         visualPerson.fill(new Ellipse2D.Double(posX, posY, CIRCLE_WIDTH, CIRCLE_HEIGHT));
-        this.setBounds(posX, posY, CIRCLE_WIDTH, CIRCLE_HEIGHT);
         //visualPerson.translate(x,y);
     }
 

@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 import static Controller.PandemicController.*;
 
 import Controller.PandemicController;
+import Controller.Time;
 import Model.Location;
 import Model.PandemicDisease;
 import Model.Person;
@@ -30,7 +31,7 @@ public class MainGui extends JFrame implements ComponentListener {
 	int x = 10;
 	int y = 10;
 	public final JPanel grid;
-	public final JPanel overlayGrid;
+	public final JPanel overview;
 
 	public MainGui(){
 		buildGui();
@@ -47,24 +48,20 @@ public class MainGui extends JFrame implements ComponentListener {
         	  loc.setXGrid(j);
         	  loc.setYGrid(i);
         	  loc.setBackground(Color.white);
-        	  grid.add(loc);
+			   grid.add(loc);
         	  loc.setLayout(null);
+        	  loc.setVisible(true);
+
         	  PandemicController.locations.add(loc);
            }
        }
-
-	   overlayGrid = new JPanel();
-	   overlayGrid.setLayout(null);
-	   overlayGrid.setBounds(0,0,0,0);
-	   overlayGrid.setVisible(true);
-	   getContentPane().add(overlayGrid);
 	   
 	   final JPanel graph = new JPanel();
 	   graph.setLayout(null);
 	   graph.setBackground(Color.lightGray);
 	   
 	   
-	   final JPanel overview = new JPanel();
+	   overview = new JPanel();
 	   getContentPane().add(overview);
 	   overview.setLayout(new GridLayout(1,2,0,0));
 	   overview.add(graph);
@@ -77,7 +74,7 @@ public class MainGui extends JFrame implements ComponentListener {
 	   overview.add(values);
 	   
 	   JPanel numbers = new JPanel();
-	   numbers.setLayout(new GridLayout(3,1));
+	   numbers.setLayout(new GridLayout(4,2));
 	   values.add(numbers);
 	   numbers.addComponentListener(this);
 
@@ -96,10 +93,29 @@ public class MainGui extends JFrame implements ComponentListener {
 		JLabel lblDead = new JLabel (dead);
 		lblDead.setText("Verstorben:");
 
+		ImageIcon recovered = new ImageIcon("src/main/resources/recovered1.png");
+		recovered.setImage(recovered.getImage().getScaledInstance(29,29, Image.SCALE_DEFAULT));
+		JLabel lblRecovered = new JLabel (recovered);
+		lblRecovered.setText("Erholt/Immun:");
+
+		lblAliveValue = new JLabel ();
+		lblInfectedValue = new JLabel ();
+		lblDeadValue = new JLabel ();
+		lblRecoveredValue = new JLabel ();
+
+
 		numbers.add(lblAlive);
+		numbers.add(lblAliveValue);
+
 		numbers.add(lblInfected);
+		numbers.add(lblInfectedValue);
+
+		numbers.add(lblRecovered);
+		numbers.add(lblRecoveredValue);
+
 		numbers.add(lblDead);
-	  
+		numbers.add(lblDeadValue);
+
 	   start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Personen initial spawnen...
@@ -132,10 +148,20 @@ public class MainGui extends JFrame implements ComponentListener {
 								e.printStackTrace();
 							}
 						}
-						System.out.println("Finished on " + Thread.currentThread());
+						System.out.println("Finished on " + Thread.currentThread() + ", Tag: "+ Time.getCurrentDay());
+						PandemicController.refreshGrid();
+						for(Location aLocation: locations) {
+							aLocation.revalidate();
+							aLocation.repaint();
+							/*for (Person aPerson: aLocation.presentPersons) {
+								aPerson.revalidate();
+								aPerson.repaint();
+							}*/
+						}
 					}
 				};
 				appThread.start();
+				PandemicController.refreshGrid();
 				//pd.initialPaint(getGraphics());
 			}
 		});
@@ -253,10 +279,16 @@ public class MainGui extends JFrame implements ComponentListener {
 		
 	public static MainGui instance;
 	public static PandemicController controller;
+	public JLabel lblAliveValue = new JLabel ();
+	public JLabel lblInfectedValue = new JLabel ();
+	public JLabel lblDeadValue = new JLabel ();
+	public JLabel lblRecoveredValue = new JLabel ();
+
 	public static void main(String[] args) {
 		instance = new MainGui();
 		instance.setVisible(true);
 		controller = new PandemicController();
+		SwingUtilities.invokeLater(() -> PandemicController.refreshGrid());
 		//PandemicController.spawnPersons();
 	}
 

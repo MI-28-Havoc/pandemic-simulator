@@ -49,10 +49,9 @@ public class Location extends JPanel{
 	            }
 
 	            double finalProbInfectionAtThisLocation = probInfectionAtThisLocation; //Ist nötig, da in Lambda-Expressions nur final-Variablen erlaubt sind
-	            for(Person aPerson : presentPersons.stream().filter(aPerson->!aPerson.isInfected()).collect(Collectors.toList())) {
+	            for(Person aPerson : presentPersons.stream().filter(aPerson->!aPerson.isInfected() && !aPerson.isDead() && !aPerson.isRecovered()).collect(Collectors.toList())) {
 	                if (Math.random() < finalProbInfectionAtThisLocation) {
 	                    aPerson.infect();
-						amountInfected++;
 	                }
 	            }
 	        }
