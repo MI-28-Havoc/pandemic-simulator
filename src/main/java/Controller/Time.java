@@ -11,4 +11,6 @@ public class Time {
     public static int getCurrentDay() {
         return currentDay;
     }
+
+    public static void reset() {currentDay = 0;}
 }

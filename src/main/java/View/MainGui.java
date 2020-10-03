@@ -36,11 +36,11 @@ public class MainGui extends JFrame implements ComponentListener {
 	public MainGui(){
 		buildGui();
 	   
-	   grid = new JPanel();
-	   getContentPane().add(grid);
-	   grid.setLayout(new GridLayout(x, y, 1, 1));
-	   grid.setBackground(Color.black); //= Farbe der Cellborder
-	   //panel_2.addComponentListener(this);
+	   	grid = new JPanel();
+	   	getContentPane().add(grid);
+	   	grid.setLayout(new GridLayout(x, y, 1, 1));
+	   	grid.setBackground(Color.black); //= Farbe der Cellborder
+	   	//panel_2.addComponentListener(this);
 	  
 	   for (int i = 1; i <= x; i++) {
            for (int j = 1; j <= y; j++) {
@@ -68,14 +68,22 @@ public class MainGui extends JFrame implements ComponentListener {
 	   
 	   PandemicDisease pd = new PandemicDisease();
 	   
-	   JPanel values = new JPanel();
-	   values.setLayout(new GridLayout(2, 1));
-	   values.add(start);
-	   overview.add(values);
+	   JPanel valuesAndButtons = new JPanel();
+	   valuesAndButtons.setLayout(new GridLayout(2, 1));
+
+	   //START
+	   JPanel buttons = new JPanel();
+	   buttons.setLayout(new GridLayout(2,1));
+	   buttons.add(start);
+	   buttons.add(reset);
+	   //ENDE
+
+	   valuesAndButtons.add(buttons);
+	   overview.add(valuesAndButtons);
 	   
 	   JPanel numbers = new JPanel();
 	   numbers.setLayout(new GridLayout(4,2));
-	   values.add(numbers);
+	   valuesAndButtons.add(numbers);
 	   numbers.addComponentListener(this);
 
 	   ImageIcon alive = new ImageIcon("src/main/resources/alive.png");
@@ -118,23 +126,6 @@ public class MainGui extends JFrame implements ComponentListener {
 
 	   start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//Personen initial spawnen...
-
-				/*MOVED ZU PANDEMICCONTROLLER
-				for(Location l : locations) {
-					for (int i = 0; i < getRandomNumberInRange(0, 4); i++) {
-						Person p = new Person(getGraphics());
-						p.setPosX(l.getXGrid());
-						p.setPosY(l.getYGrid());
-						l.presentPersons.add(p);
-						int locX = l.getX()+getRandomNumberInRange(15,105);
-						int locY = l.getY()+getRandomNumberInRange(35,50);
-						p.setLocation(locX, locY);
-						p.paintComponent(locX, locY);
-					}
-
-				}*/
-
 				Thread appThread = new Thread() {
 					public void run() {
 						while (amountInfected != 0) {
@@ -149,23 +140,35 @@ public class MainGui extends JFrame implements ComponentListener {
 							}
 						}
 						System.out.println("Finished on " + Thread.currentThread() + ", Tag: "+ Time.getCurrentDay());
-						PandemicController.refreshGrid();
+						//PandemicController.refreshGrid();
 						for(Location aLocation: locations) {
 							aLocation.revalidate();
 							aLocation.repaint();
-							/*for (Person aPerson: aLocation.presentPersons) {
-								aPerson.revalidate();
-								aPerson.repaint();
-							}*/
 						}
 					}
 				};
 				appThread.start();
 				PandemicController.refreshGrid();
-				//pd.initialPaint(getGraphics());
+			}
+		});
+
+		reset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Thread appThread = new Thread() {
+					public void run() {
+						if (amountInfected == 0) {
+							PandemicController.resetSim();
+						}
+
+						System.out.println("Simulation resetted");
+					}
+				};
+				appThread.start();
 			}
 		});
 	}
+
+
 	
 	public void relocatePersons() {
 		// akzeptiert die Änderung von presentPersons in der aktuellen Location nicht !?
@@ -274,8 +277,9 @@ public class MainGui extends JFrame implements ComponentListener {
         getContentPane().setLayout(new GridLayout(2,1,0,0));
 	}
 	
-		JLabel caption = new JLabel("Pandemic Simulator");
-		JButton start = new JButton("Start");
+	JLabel caption = new JLabel("Pandemic Simulator");
+	JButton start = new JButton("Start");
+	JButton reset = new JButton("Zuruecksetzen");
 		
 	public static MainGui instance;
 	public static PandemicController controller;
@@ -285,11 +289,14 @@ public class MainGui extends JFrame implements ComponentListener {
 	public JLabel lblRecoveredValue = new JLabel ();
 
 	public static void main(String[] args) {
-		instance = new MainGui();
-		instance.setVisible(true);
-		controller = new PandemicController();
+		if (instance == null) {
+			instance = new MainGui();
+			instance.setVisible(true);
+			controller = new PandemicController();
+		}
 		SwingUtilities.invokeLater(() -> PandemicController.refreshGrid());
-		//PandemicController.spawnPersons();
+		PandemicController.spawnPersons();
+		PandemicController.setPatientZero();
 	}
 
 	public static int getRandomNumberInRange(int min, int max) {
@@ -310,8 +317,8 @@ public class MainGui extends JFrame implements ComponentListener {
 	@Override
 	public void componentMoved(ComponentEvent e) {
 		SwingUtilities.invokeLater(() -> {
-			PandemicController.spawnPersons();
-			PandemicController.setPatientZero();
+			//PandemicController.spawnPersons();
+			//PandemicController.setPatientZero();
 		}
 		);
 

@@ -2,6 +2,7 @@ package Controller;
 
 import Model.Location;
 import Model.Person;
+import View.MainGui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,7 +80,7 @@ public class PandemicController{
         //Personen initial spawnen...
         boolean patientZeroIsSet = false;
         for(Location l : locations) {
-            for (int i = 0; i < getRandomNumberInRange(0, 200); i++) { //TODO lol
+            for (int i = 0; i < getRandomNumberInRange(0, 300); i++) { //TODO lol
                 Person p = new Person(instance.getGraphics());
                 l.presentPersons.add(p);
                 int locX = l.getX()+getRandomNumberInRange(10,l.getWidth()-10);
@@ -114,6 +115,20 @@ public class PandemicController{
             randomLocation.presentPersons.get(0).revalidate();
             randomLocation.presentPersons.get(0).repaint();
         }
+    }
+
+    public static void resetSim() {
+        amountInfected = 0;
+        amountAlive = 0;
+        amountRecovered = 0;
+        amountDead = 0;
+
+        for(Location aLocation: locations) {
+            aLocation.removeAll();
+            aLocation.presentPersons.clear();
+        }
+        Time.reset();
+        MainGui.main(null);
     }
 
     public static void refreshGrid() {
