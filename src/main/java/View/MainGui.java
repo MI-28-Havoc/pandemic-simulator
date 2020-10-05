@@ -61,13 +61,13 @@ public class MainGui extends JFrame implements ComponentListener {
 	   graph.setBackground(Color.lightGray);
 	   
 	   
+	  
 	   overview = new JPanel();
 	   getContentPane().add(overview);
 	   overview.setLayout(new GridLayout(1,2,0,0));
 	   overview.add(graph);
 	   
-	   PandemicDisease pd = new PandemicDisease();
-	   
+	   	   
 	   JPanel valuesAndButtons = new JPanel();
 	   valuesAndButtons.setLayout(new GridLayout(2, 1));
 
@@ -87,7 +87,7 @@ public class MainGui extends JFrame implements ComponentListener {
 	   numbers.addComponentListener(this);
 
 	   ImageIcon alive = new ImageIcon("src/main/resources/alive.png");
-		alive.setImage(alive.getImage().getScaledInstance(27,27, Image.SCALE_DEFAULT));	// 13,13 f�r das Grid oben
+		alive.setImage(alive.getImage().getScaledInstance(27,27, Image.SCALE_DEFAULT));	
 		JLabel lblAlive = new JLabel (alive);
 		lblAlive.setText("Gesund:");
 
@@ -283,20 +283,23 @@ public class MainGui extends JFrame implements ComponentListener {
 		
 	public static MainGui instance;
 	public static PandemicController controller;
+	public static PandemicDisease pd;
 	public JLabel lblAliveValue = new JLabel ();
 	public JLabel lblInfectedValue = new JLabel ();
 	public JLabel lblDeadValue = new JLabel ();
 	public JLabel lblRecoveredValue = new JLabel ();
 
 	public static void main(String[] args) {
-		if (instance == null) {
+		if (instance == null) {	//TODO extra paintComponent, um Labels zu refreshen
 			instance = new MainGui();
 			instance.setVisible(true);
 			controller = new PandemicController();
+			pd= new PandemicDisease(20);
 		}
 		SwingUtilities.invokeLater(() -> PandemicController.refreshGrid());
 		PandemicController.spawnPersons();
 		PandemicController.setPatientZero();
+		pd.paintComponent(instance.getGraphics());
 	}
 
 	public static int getRandomNumberInRange(int min, int max) {
