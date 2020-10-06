@@ -6,7 +6,6 @@ import View.MainGui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.Graphics;
 import java.util.ArrayList;
 
 import static View.MainGui.getRandomNumberInRange;
@@ -18,7 +17,12 @@ public class PandemicController{
     public static int amountAlive = 0;
     public static int amountRecovered = 0;
     public static int amountDead = 0;
-
+    
+    public static int lastX = 70;
+    public static int lastYAlive = 930;	//in setPateientZero setzen?
+    public static int lastYInfected = 930;
+    public static int lastYDead = 930;
+    public static int lastYRecovered = 930;
 
     /*TODO:
         -> Tick machen, also nächsten Tag ansetzen mit Time.nextDay (DONE)
@@ -34,7 +38,7 @@ public class PandemicController{
                     aPerson.checkCondition();
             }
         }
-
+        graphPaint(instance.getGraphics());
         //Platzhalter: Personen auf Grid moven (wahrscheinlichkeit für moven einbauen)
         //Platzhalter: Personen / Punkte zeichnen. Am besten auch in eigenem thread
         for(Location aLocation: locations) {
@@ -43,39 +47,44 @@ public class PandemicController{
         }
     }
 
-    public static void initialPaint(Graphics oldG) { //Für den Graphen
+    public static void initialPaint(Graphics oldG) { //Achsenkreuz
         Graphics2D g = (Graphics2D)oldG;
-
-        //Achsenkreuz
-        g.setPaint(new Color(0,0,0));
-        //g.drawLine(x+10,y+10,500,y+10); //X
-        //g.drawLine(x+10,y+10,x+10,0); //Y
-        g.setFont(new Font("Arial", Font.BOLD,20));  //Attribut, Gr��e in [pt]
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.75f));
-        //Formel
-        //g.drawString("f(x) = "+model.getA()+"*x^3 + "+model.getB()+"*x^2 + "+model.getC()+"*x + "+model.getD(),10,30);
-        g.drawLine(50, 950, 550, 950);	//x-Achse
-        g.drawLine(50, 950, 50, 600);	//y-Achse
-
-
-        // Werte
-        //g.setPaint(new Color(255,0,0));
-
-        // g.drawString("HalloWelt",100,100);
-        // g.drawLine(50,50+50*(int)(model.getA()),150,150);
-        // g.draw
-	    /*int lastX = 0, lastY = 0;
-	    //Funktion plotten
-	    for(int i=-1000; i<=1000; i++) {
-	    	x = i / 100.0;
-	    	y = model.f(x);
-	    	//g.fillOval((int)(150+x*50), (int)(150-y*50), 5, 5);
-	    	if (i!=-1000)
-	    		g.drawLine(lastX, lastY, (int)(150+x*pixelPerValue), (int)(150-y*pixelPerValue));
-	    	lastX = (int)(150+x*pixelPerValue);
-	    	lastY = (int)(150-y*pixelPerValue);
-	    }*/
+	    
+	    //Achsenkreuz
+	    g.setPaint(Color.BLACK);
+	    g.drawLine(70,930,560,930); //X
+	    g.drawLine(70,930,70,550); //Y
+	    
+	    for (int i=1; i<25; i++) {
+	    	g.drawLine(i*20+70, 920, i*20+70,940 ); //X div
+	    }
+	    for (int i=1; i<19; i++) {
+	    	g.drawLine(60,930 - i*20,80,930-i*20); //Y div	
+	    }
     }
+    
+    public static void graphPaint(Graphics oldG) { //Kurven
+        Graphics2D g = (Graphics2D)oldG;
+	    
+        g.setPaint(Color.GREEN);
+ 	    	
+ 	    	g.drawLine(lastX, lastYAlive, lastX+20, 930-(amountAlive/10));
+ 	    	lastYAlive = 930-(amountAlive/10);
+ 	    	
+ 	    	g.setPaint(Color.RED);
+ 	    	g.drawLine(lastX, lastYInfected, lastX+20, 930-(amountInfected/10));
+ 	    	lastYInfected = 930-(amountInfected/10);
+ 	    	
+ 	    	g.setPaint(Color.BLACK);
+ 	    	g.drawLine(lastX, lastYDead, lastX+20, 930-(amountDead/10));
+ 	    	lastYDead = 930-(amountDead/10);
+ 	    	
+ 	    	g.setPaint(Color.BLUE);
+ 	    	g.drawLine(lastX, lastYRecovered, lastX+20, 930-(amountRecovered/10));
+ 	    	lastX = lastX + 20;
+ 	    	lastYRecovered = 930-(amountRecovered/10);
+    }
+    
     public static void spawnPersons() {
         //Personen initial spawnen...
         boolean patientZeroIsSet = false;
@@ -126,6 +135,7 @@ public class PandemicController{
             aLocation.removeAll();
             aLocation.presentPersons.clear();
         }
+        lastX = 70;
         Time.reset();
         MainGui.main(null);
     }

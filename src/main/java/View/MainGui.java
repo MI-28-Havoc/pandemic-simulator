@@ -283,7 +283,6 @@ public class MainGui extends JFrame implements ComponentListener {
 		
 	public static MainGui instance;
 	public static PandemicController controller;
-	public static PandemicDisease pd;
 	public JLabel lblAliveValue = new JLabel ();
 	public JLabel lblInfectedValue = new JLabel ();
 	public JLabel lblDeadValue = new JLabel ();
@@ -294,12 +293,12 @@ public class MainGui extends JFrame implements ComponentListener {
 			instance = new MainGui();
 			instance.setVisible(true);
 			controller = new PandemicController();
-			pd= new PandemicDisease(20);
 		}
 		SwingUtilities.invokeLater(() -> PandemicController.refreshGrid());
 		PandemicController.spawnPersons();
 		PandemicController.setPatientZero();
-		pd.paintComponent(instance.getGraphics());
+		controller.initialPaint(instance.getGraphics());
+		//pd.paintComponent(instance.getGraphics());
 	}
 
 	public static int getRandomNumberInRange(int min, int max) {
