@@ -154,7 +154,8 @@ public class PandemicController{
 
         instance.grid.revalidate();
         instance.grid.repaint();
-        instance.overview.revalidate();
-        instance.overview.repaint();
+        //raus. Sorgt für ständigen reset des Verlaufsgrafen
+        //instance.overview.revalidate();
+        //instance.overview.repaint();
     }
 }
