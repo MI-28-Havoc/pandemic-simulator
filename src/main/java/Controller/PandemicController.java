@@ -40,6 +40,7 @@ public class PandemicController{
         }
         graphPaint(instance.getGraphics());
         //Platzhalter: Personen auf Grid moven (wahrscheinlichkeit für moven einbauen)
+        instance.relocatePersons();
         //Platzhalter: Personen / Punkte zeichnen. Am besten auch in eigenem thread
         for(Location aLocation: locations) {
             if (aLocation.containsPersons())
@@ -137,6 +138,8 @@ public class PandemicController{
         }
         lastX = 70;
         Time.reset();
+        instance.revalidate();
+        instance.repaint();
         MainGui.main(null);
     }
 
@@ -154,8 +157,5 @@ public class PandemicController{
 
         instance.grid.revalidate();
         instance.grid.repaint();
-        //raus. Sorgt für ständigen reset des Verlaufsgrafen
-        //instance.overview.revalidate();
-        //instance.overview.repaint();
     }
 }

@@ -129,7 +129,7 @@ public class MainGui extends JFrame implements ComponentListener {
 				Thread appThread = new Thread() {
 					public void run() {
 						while (amountInfected != 0) {
-							relocatePersons();
+
 							tick();
 							try {
 								SwingUtilities.invokeAndWait(() -> PandemicController.refreshGrid());
