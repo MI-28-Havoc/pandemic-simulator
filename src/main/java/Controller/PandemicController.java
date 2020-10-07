@@ -62,11 +62,19 @@ public class PandemicController{
 	    for (int i=1; i<19; i++) {
 	    	g.drawLine(60,930 - i*20,80,930-i*20); //Y div	
 	    }
+	    //label
+	    g.drawString("t[d]", 565, 930);
+	    g.drawString("People[205]", 50, 545);
+	    
+	    lastYAlive = 930-amountAlive/10;	
+	    lastYInfected = 930 - amountInfected/10;
+	    lastYDead = 930 - amountDead/10;
+	    lastYRecovered = 930 - amountRecovered/10;
     }
     
     public static void graphPaint(Graphics oldG) { //Kurven
         Graphics2D g = (Graphics2D)oldG;
-	    
+	    g.setStroke(new BasicStroke(5));
         g.setPaint(Color.GREEN);
  	    	
  	    	g.drawLine(lastX, lastYAlive, lastX+20, 930-(amountAlive/10));
@@ -141,6 +149,9 @@ public class PandemicController{
         instance.revalidate();
         instance.repaint();
         MainGui.main(null);
+        instance.overview.revalidate();
+        instance.overview.repaint();
+        initialPaint(instance.getGraphics()); // TODO warum geht das nicht??
     }
 
     public static void refreshGrid() {
