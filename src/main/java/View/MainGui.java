@@ -170,8 +170,6 @@ public class MainGui extends JFrame implements ComponentListener {
 		});
 	}
 
-
-	
 	public void relocatePersons() {
 		// akzeptiert die Änderung von presentPersons in der aktuellen Location nicht !?
 		//alle Locations iterieren und für jede Person darin eine neue Location ermitteln...

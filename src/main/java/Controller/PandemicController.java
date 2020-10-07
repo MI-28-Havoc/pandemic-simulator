@@ -149,9 +149,7 @@ public class PandemicController{
         instance.revalidate();
         instance.repaint();
         MainGui.main(null);
-        instance.overview.revalidate();
-        instance.overview.repaint();
-        initialPaint(instance.getGraphics()); // TODO warum geht das nicht??
+        //initialPaint(instance.getGraphics()); // TODO warum geht das nicht?? kp lol xd
     }
 
     public static void refreshGrid() {
@@ -164,7 +162,6 @@ public class PandemicController{
         instance.lblInfectedValue.setText(String.valueOf(amountInfected));
         instance.lblDeadValue.setText(String.valueOf(amountDead));
         instance.lblRecoveredValue.setText(String.valueOf(amountRecovered));
-
 
         instance.grid.revalidate();
         instance.grid.repaint();
