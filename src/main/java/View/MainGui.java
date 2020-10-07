@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import static Controller.PandemicController.*;
+import static View.MainGui.instance;
 
 import Controller.PandemicController;
 import Controller.Time;
@@ -158,8 +159,9 @@ public class MainGui extends JFrame implements ComponentListener {
 					public void run() {
 						if (amountInfected == 0) {
 							PandemicController.resetSim();
+							
 						}
-
+						initialPaint(instance.getGraphics());
 						System.out.println("Simulation resetted");
 					}
 				};
@@ -298,7 +300,6 @@ public class MainGui extends JFrame implements ComponentListener {
 		PandemicController.spawnPersons();
 		PandemicController.setPatientZero();
 		controller.initialPaint(instance.getGraphics());
-		//pd.paintComponent(instance.getGraphics());
 	}
 
 	public static int getRandomNumberInRange(int min, int max) {
