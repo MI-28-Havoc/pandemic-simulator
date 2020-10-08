@@ -179,7 +179,7 @@ public class MainGui extends JFrame implements ComponentListener {
 				for (Person p: l.presentPersons) {
 					//int newX = p.getPosX() + getRandomNumberInRange(-1, 1);
 					//int newY = p.getPosY() + getRandomNumberInRange(-1, 1);
-					int newXGrid = l.getXGrid() + getRandomNumberInRange(-1, 1);
+					int newXGrid = l.getXGrid() + getRandomNumberInRange(-1, 1);	// warum l.getXGrid dabei? verfälscht Rückgabewert!
 					int newYGrid = l.getYGrid() + getRandomNumberInRange(-1, 1);
 					if (0 < newXGrid && newXGrid <= this.x && 0 < newYGrid && newYGrid <= this.y && (newXGrid != l.getXGrid() || newYGrid != l.getYGrid())) {
 						int directionX = newXGrid - l.getXGrid();
@@ -307,7 +307,7 @@ public class MainGui extends JFrame implements ComponentListener {
 		}
 
 		Random r = new Random();
-		return r.nextInt((max - min) + 1) + min;
+		return r.ints(min, (max + 1)).findFirst().getAsInt();
 	}
 
 	@Override
@@ -316,7 +316,7 @@ public class MainGui extends JFrame implements ComponentListener {
 	}
 
 	@Override
-	public void componentMoved(ComponentEvent e) {
+	public void componentMoved(ComponentEvent e) {	// can be deleted?
 		SwingUtilities.invokeLater(() -> {
 			//PandemicController.spawnPersons();
 			//PandemicController.setPatientZero();
