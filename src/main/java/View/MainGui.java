@@ -294,7 +294,7 @@ public class MainGui extends JFrame implements ComponentListener {
 			instance.setVisible(true);
 			controller = new PandemicController();
 		}
-		SwingUtilities.invokeLater(() -> PandemicController.refreshGrid());
+		//SwingUtilities.invokeLater(() -> PandemicController.refreshGrid()); //nicht nötig
 		PandemicController.spawnPersons();
 		PandemicController.setPatientZero();
 		controller.initialPaint(instance.getGraphics());
