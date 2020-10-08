@@ -158,12 +158,23 @@ public class PandemicController{
                 aPerson.refreshComponent();
             }
         }*/
+
+        instance.grid.revalidate();
+        instance.grid.repaint();
+        for (Location l : locations) {
+            for (Person p: l.presentPersons) {
+                p.revalidate();
+                p.repaint();
+            }
+        }
+
+
+    }
+
+    public static void refreshInfoPanel() {
         instance.lblAliveValue.setText(String.valueOf(amountAlive));
         instance.lblInfectedValue.setText(String.valueOf(amountInfected));
         instance.lblDeadValue.setText(String.valueOf(amountDead));
         instance.lblRecoveredValue.setText(String.valueOf(amountRecovered));
-
-        instance.grid.revalidate();
-        instance.grid.repaint();
     }
 }

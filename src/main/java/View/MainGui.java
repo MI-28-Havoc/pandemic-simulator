@@ -129,27 +129,27 @@ public class MainGui extends JFrame implements ComponentListener {
 			public void actionPerformed(ActionEvent e) {
 				Thread appThread = new Thread() {
 					public void run() {
+						Time.startTimer();
 						while (amountInfected != 0) {
-
-							tick();
-							try {
-								SwingUtilities.invokeAndWait(() -> PandemicController.refreshGrid());
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							} catch (InvocationTargetException e) {
-								e.printStackTrace();
+							if (Time.nextTickReached()) {
+								try {
+									SwingUtilities.invokeAndWait(() -> {
+										PandemicController.refreshGrid();
+										PandemicController.refreshInfoPanel();
+									});
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								} catch (InvocationTargetException e) {
+									e.printStackTrace();
+								}
+								tick();
 							}
 						}
 						System.out.println("Finished on " + Thread.currentThread() + ", Tag: "+ Time.getCurrentDay());
-						//PandemicController.refreshGrid();
-						for(Location aLocation: locations) {
-							aLocation.revalidate();
-							aLocation.repaint();
-						}
+						PandemicController.refreshInfoPanel();
 					}
 				};
 				appThread.start();
-				PandemicController.refreshGrid();
 			}
 		});
 
