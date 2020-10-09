@@ -10,22 +10,16 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import static Controller.PandemicController.*;
-import static View.MainGui.instance;
 
 import Controller.PandemicController;
 import Controller.Time;
 import Model.Location;
-import Model.PandemicDisease;
 import Model.Person;
-
-import javax.swing.ImageIcon;
 
 
 public class MainGui extends JFrame implements ComponentListener {
@@ -74,9 +68,27 @@ public class MainGui extends JFrame implements ComponentListener {
 
 	   //START
 	   JPanel buttons = new JPanel();
-	   buttons.setLayout(new GridLayout(2,1));
+	   buttons.setLayout(new GridLayout(2,2));
+
+	   JPanel timeSliderContainer = new JPanel();
+	   timeSliderContainer.setLayout(new GridLayout(2,1));
+
+	   JSlider dayDurationInMs = new JSlider(JSlider.HORIZONTAL, 500, 5000, Time.dayDurationInMs);
+	   dayDurationInMs.setMajorTickSpacing(500);
+	   dayDurationInMs.setMinorTickSpacing(100);
+	   dayDurationInMs.setPaintTicks(true);
+	   dayDurationInMs.setPaintLabels(true);
+
+	   JLabel lblSlider = new JLabel ();
+	   lblSlider.setHorizontalAlignment(SwingConstants.CENTER);
+	   lblSlider.setText("Dauer eines Tages in ms:");
+	   timeSliderContainer.add(lblSlider);
+	   timeSliderContainer.add(dayDurationInMs);
+
 	   buttons.add(start);
 	   buttons.add(reset);
+	   buttons.add(timeSliderContainer);
+
 	   //ENDE
 
 	   valuesAndButtons.add(buttons);
@@ -129,9 +141,8 @@ public class MainGui extends JFrame implements ComponentListener {
 			public void actionPerformed(ActionEvent e) {
 				Thread appThread = new Thread() {
 					public void run() {
-						Time.startTimer();
 						while (amountInfected != 0) {
-							if (Time.nextTickReached()) {
+							if (Time.nextTick()) {
 								try {
 									SwingUtilities.invokeAndWait(() -> {
 										PandemicController.refreshGrid();
@@ -168,6 +179,17 @@ public class MainGui extends JFrame implements ComponentListener {
 				appThread.start();
 			}
 		});
+
+		dayDurationInMs.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider)e.getSource();
+				if (!source.getValueIsAdjusting()) {
+					Time.dayDurationInMs = (int)source.getValue();
+				}
+			}
+		});
+
 	}
 
 	public void relocatePersons() {
@@ -283,10 +305,10 @@ public class MainGui extends JFrame implements ComponentListener {
 		
 	public static MainGui instance;
 	public static PandemicController controller;
-	public JLabel lblAliveValue = new JLabel ();
-	public JLabel lblInfectedValue = new JLabel ();
-	public JLabel lblDeadValue = new JLabel ();
-	public JLabel lblRecoveredValue = new JLabel ();
+	public JLabel lblAliveValue;
+	public JLabel lblInfectedValue;
+	public JLabel lblDeadValue;
+	public JLabel lblRecoveredValue;
 
 	public static void main(String[] args) {
 		if (instance == null) {	//TODO extra paintComponent, um Labels zu refreshen
