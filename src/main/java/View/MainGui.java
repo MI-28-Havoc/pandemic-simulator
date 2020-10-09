@@ -3,8 +3,6 @@ package View;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -13,32 +11,36 @@ import java.util.Random;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 
 import static Controller.PandemicController.*;
 
 import Controller.PandemicController;
+import Controller.Status;
 import Controller.Time;
 import Model.Location;
 import Model.Person;
 
 
-public class MainGui extends JFrame implements ComponentListener {
-	int x = 10;
-	int y = 10;
+public class MainGui extends JFrame {
+	public int gridCols = 10;
+	public int gridRows = 10;
 	public final JPanel grid;
 	public final JPanel overview;
+	public final JTextPane log;
 
 	public MainGui(){
 		buildGui();
 	   
 	   	grid = new JPanel();
 	   	getContentPane().add(grid);
-	   	grid.setLayout(new GridLayout(x, y, 1, 1));
+	   	grid.setLayout(new GridLayout(gridCols, gridRows, 1, 1));
 	   	grid.setBackground(Color.black); //= Farbe der Cellborder
 	   	//panel_2.addComponentListener(this);
 	  
-	   for (int i = 1; i <= x; i++) {
-           for (int j = 1; j <= y; j++) {
+	   for (int i = 1; i <= gridCols; i++) {
+           for (int j = 1; j <= gridRows; j++) {
         	  Location loc = new Location();
         	  loc.setXGrid(j);
         	  loc.setYGrid(i);
@@ -63,8 +65,8 @@ public class MainGui extends JFrame implements ComponentListener {
 	   overview.add(graph);
 	   
 	   	   
-	   JPanel valuesAndButtons = new JPanel();
-	   valuesAndButtons.setLayout(new GridLayout(2, 1));
+	   JPanel valuesAndButtonsContainer = new JPanel();
+	   valuesAndButtonsContainer.setLayout(new GridLayout(2, 1));
 
 	   //START
 	   JPanel buttons = new JPanel();
@@ -85,19 +87,24 @@ public class MainGui extends JFrame implements ComponentListener {
 	   timeSliderContainer.add(lblSlider);
 	   timeSliderContainer.add(dayDurationInMs);
 
+	   JTextPane logPanel = new JTextPane();
+	   log = logPanel;
+	   logPanel.setEditable(false);
+
+
 	   buttons.add(start);
 	   buttons.add(reset);
 	   buttons.add(timeSliderContainer);
+	   buttons.add(logPanel);
 
 	   //ENDE
 
-	   valuesAndButtons.add(buttons);
-	   overview.add(valuesAndButtons);
+	   valuesAndButtonsContainer.add(buttons);
+	   overview.add(valuesAndButtonsContainer);
 	   
-	   JPanel numbers = new JPanel();
-	   numbers.setLayout(new GridLayout(4,2));
-	   valuesAndButtons.add(numbers);
-	   numbers.addComponentListener(this);
+	   JPanel numberContainer = new JPanel();
+	   numberContainer.setLayout(new GridLayout(4,2));
+	   valuesAndButtonsContainer.add(numberContainer);
 
 	   ImageIcon alive = new ImageIcon("src/main/resources/alive.png");
 		alive.setImage(alive.getImage().getScaledInstance(27,27, Image.SCALE_DEFAULT));	
@@ -125,20 +132,21 @@ public class MainGui extends JFrame implements ComponentListener {
 		lblRecoveredValue = new JLabel ();
 
 
-		numbers.add(lblAlive);
-		numbers.add(lblAliveValue);
+		numberContainer.add(lblAlive);
+		numberContainer.add(lblAliveValue);
 
-		numbers.add(lblInfected);
-		numbers.add(lblInfectedValue);
+		numberContainer.add(lblInfected);
+		numberContainer.add(lblInfectedValue);
 
-		numbers.add(lblRecovered);
-		numbers.add(lblRecoveredValue);
+		numberContainer.add(lblRecovered);
+		numberContainer.add(lblRecoveredValue);
 
-		numbers.add(lblDead);
-		numbers.add(lblDeadValue);
+		numberContainer.add(lblDead);
+		numberContainer.add(lblDeadValue);
 
 	   start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				start.setEnabled(false);
 				Thread appThread = new Thread() {
 					public void run() {
 						while (amountInfected != 0) {
@@ -156,16 +164,20 @@ public class MainGui extends JFrame implements ComponentListener {
 								tick();
 							}
 						}
+						PandemicController.status = Status.FINISHED;
 						System.out.println("Finished on " + Thread.currentThread() + ", Tag: "+ Time.getCurrentDay());
 						PandemicController.refreshInfoPanel();
 					}
 				};
 				appThread.start();
+				PandemicController.status = Status.RUNNING;
 			}
 		});
 
 		reset.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
+				start.setEnabled(true);
 				Thread appThread = new Thread() {
 					public void run() {
 						if (amountInfected == 0) {
@@ -191,104 +203,6 @@ public class MainGui extends JFrame implements ComponentListener {
 		});
 
 	}
-
-	public void relocatePersons() {
-		// akzeptiert die Änderung von presentPersons in der aktuellen Location nicht !?
-		//alle Locations iterieren und für jede Person darin eine neue Location ermitteln...
-		for(Location l : locations) {
-			ArrayList<Person> gonePersons = new ArrayList<>();
-			if (!l.presentPersons.isEmpty()) {
-				for (Person p: l.presentPersons) {
-					//int newX = p.getPosX() + getRandomNumberInRange(-1, 1);
-					//int newY = p.getPosY() + getRandomNumberInRange(-1, 1);
-					int newXGrid = l.getXGrid() + getRandomNumberInRange(-1, 1);	// warum l.getXGrid dabei? verfälscht Rückgabewert!
-					int newYGrid = l.getYGrid() + getRandomNumberInRange(-1, 1);
-					if (0 < newXGrid && newXGrid <= this.x && 0 < newYGrid && newYGrid <= this.y && (newXGrid != l.getXGrid() || newYGrid != l.getYGrid())) {
-						int directionX = newXGrid - l.getXGrid();
-						int directionY = newYGrid - l.getYGrid();
-						Optional<Location> newLocation = locations.stream().filter(Location -> (newXGrid == Location.getXGrid() && newYGrid == Location.getYGrid())).findAny();
-						gonePersons.add(p);
-
-						newLocation.get().presentPersons.add(p);
-						//START Block von unten:
-						int destX = p.getPosX() + 125 * directionX;
-						int destY = p.getPosY() + 49 * directionY;
-						p.setPosX(destX);
-						p.setPosY(destY);
-						p.revalidate();
-						p.repaint();
-						/*TEST START
-						Graphics2D g = (Graphics2D) instance.getGraphics();
-						g.setColor(Color.magenta);
-						g.fill(new Ellipse2D.Double(destX, destY, CIRCLE_WIDTH, CIRCLE_HEIGHT));
-
-						p.setBounds(destX, destY, CIRCLE_WIDTH, CIRCLE_HEIGHT);
-						//TEST ENDE */
-						/*
-
-						int destX = p.getX() + 49 * deltaX;
-						int destY = p.getY() + 125 * deltaY;
-						while (destX != p.getX() || destY != p.getY()) {
-							int currentX = p.getX();
-							int currentY = p.getY();
-							if (destX < currentX && destY < currentY) {
-								currentX -= 1;
-								currentY -= 1;
-								p.setLocation(currentX, currentY);
-
-							} else if (destX > currentX && destY > currentY) {
-								currentX += 1;
-								currentY += 1;
-								//p.setLocation(currentX, currentY);
-								p.paint(currentX, currentY);
-
-							} else if (destY < currentY && destX > currentX) {
-								currentY -= 1;
-								currentX += 1;
-								//p.setLocation(currentX, currentY);
-								p.paint(currentX, currentY);
-
-							} else if (destY > currentY && destX < currentX) {
-								currentY += 1;
-								currentX -= 1;
-								//p.setLocation(currentX, currentY);
-								p.paint(currentX, currentY);
-
-							} else if (destY == currentY && destX < currentX) {
-								currentX -= 1;
-								//p.setLocation(currentX, currentY);
-								p.paint(currentX, currentY);
-
-							} else if (destY == currentY && destX > currentX) {
-								currentX += 1;
-								//p.setLocation(currentX, currentY);
-								p.paint(currentX, currentY);
-
-							} else if (destY > currentY && destX == currentX) {
-								currentY += 1;
-								//p.setLocation(currentX, currentY);
-								p.paint(currentX, currentY);
-
-							} else if (destY < currentY && destX == currentX) {
-								currentY -= 1;
-								//p.setLocation(currentX, currentY);
-								p.paint(currentX, currentY);
-
-							}
-							//p.repaint();
-						}
-						*/
-						//ENDE Block von unten:
-					}
-
-				}
-				//p.paintComponent(getGraphics(), l.getX()+getRandomNumberInRange(15,105), l.getY()+getRandomNumberInRange(35,50));
-			}
-			
-			l.presentPersons.removeAll(gonePersons);
-		}
-	}
-	
 	
 	public void buildGui() {
 		setTitle("Pandemic Simulator");
@@ -316,10 +230,10 @@ public class MainGui extends JFrame implements ComponentListener {
 			instance.setVisible(true);
 			controller = new PandemicController();
 		}
-		//SwingUtilities.invokeLater(() -> PandemicController.refreshGrid()); //nicht nötig
 		PandemicController.spawnPersons();
 		PandemicController.setPatientZero();
-		controller.initialPaint(instance.getGraphics());
+		PandemicController.status = Status.READY;
+		PandemicController.initialPaint(instance.getGraphics());
 	}
 
 	public static int getRandomNumberInRange(int min, int max) {
@@ -332,29 +246,13 @@ public class MainGui extends JFrame implements ComponentListener {
 		return r.ints(min, (max + 1)).findFirst().getAsInt();
 	}
 
-	@Override
-	public void componentResized(ComponentEvent e) {
-		
-	}
-
-	@Override
-	public void componentMoved(ComponentEvent e) {	// can be deleted?
-		SwingUtilities.invokeLater(() -> {
-			//PandemicController.spawnPersons();
-			//PandemicController.setPatientZero();
+	public void append(String s) {
+		try {
+			Document doc = log.getDocument();
+			doc.insertString(doc.getLength(), s, null);
+		} catch(BadLocationException exc) {
+			exc.printStackTrace();
 		}
-		);
-
-	}
-
-	@Override
-	public void componentShown(ComponentEvent e) {
-		
-	}
-
-	@Override
-	public void componentHidden(ComponentEvent e) {
-		
 	}
 }
 
