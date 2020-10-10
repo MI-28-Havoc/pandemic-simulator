@@ -17,6 +17,7 @@ import javax.swing.text.Document;
 import static Controller.PandemicController.*;
 
 import Controller.PandemicController;
+import Controller.SimulatorConfig;
 import Controller.Status;
 import Controller.Time;
 import Model.Location;
@@ -91,9 +92,11 @@ public class MainGui extends JFrame {
 	   log = logPanel;
 	   logPanel.setEditable(false);
 
-
-	   buttons.add(start);
-	   buttons.add(reset);
+	   JPanel startReset = new JPanel(new GridLayout(1,2));
+	   startReset.add(start);
+	   startReset.add(reset);
+	   buttons.add(startReset);
+	   buttons.add(settings);
 	   buttons.add(timeSliderContainer);
 	   buttons.add(logPanel);
 
@@ -191,6 +194,13 @@ public class MainGui extends JFrame {
 				appThread.start();
 			}
 		});
+		
+		settings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setEnabled(false);
+				SimulatorConfig.configSettings();
+			}
+		});
 
 		dayDurationInMs.addChangeListener(new ChangeListener() {
 			@Override
@@ -216,6 +226,7 @@ public class MainGui extends JFrame {
 	JLabel caption = new JLabel("Pandemic Simulator");
 	JButton start = new JButton("Start");
 	JButton reset = new JButton("Zuruecksetzen");
+	JButton settings = new JButton("Einstellungen");
 		
 	public static MainGui instance;
 	public static PandemicController controller;
@@ -225,7 +236,7 @@ public class MainGui extends JFrame {
 	public JLabel lblRecoveredValue;
 
 	public static void main(String[] args) {
-		if (instance == null) {	//TODO extra paintComponent, um Labels zu refreshen
+		if (instance == null) {	
 			instance = new MainGui();
 			instance.setVisible(true);
 			controller = new PandemicController();
