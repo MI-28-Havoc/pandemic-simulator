@@ -68,7 +68,7 @@ public class Person extends JPanel {
             illnessAtDay = Time.getCurrentDay();
         }
         //Krankheitszeit prüfen
-        if (Time.getCurrentDay() > this.illnessAtDay + this.illnessPeriod) {
+        if (Time.getCurrentDay() > (this.illnessAtDay + this.illnessPeriod) && this.illnessBegun) {
             if (Math.random() < PROB_BASIC_FATALITY) {
                 this.dead = true;
                 this.deathAtDay = Time.getCurrentDay();

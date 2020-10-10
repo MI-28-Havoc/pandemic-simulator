@@ -51,8 +51,8 @@ public class PandemicController{
 	    g.drawLine(70,930,560,930); //X
 	    g.drawLine(70,930,70,550); //Y
 	    
-	    for (int i=1; i<25; i++) {
-	    	g.drawLine(i*20+70, 920, i*20+70,940 ); //X div
+	    for (int i=1; i<60; i++) {
+	    	g.drawLine(i*8+70, 920, i*8+70,940 ); //X div
 	    }
 	    for (int i=1; i<19; i++) {
 	    	g.drawLine(60,930 - i*20,80,930-i*20); //Y div	
@@ -72,20 +72,20 @@ public class PandemicController{
 	    g.setStroke(new BasicStroke(5));
         g.setPaint(Color.GREEN);
  	    	
- 	    	g.drawLine(lastX, lastYAlive, lastX+20, 930-(amountAlive/10));
+ 	    	g.drawLine(lastX, lastYAlive, lastX+8, 930-(amountAlive/10));
  	    	lastYAlive = 930-(amountAlive/10);
  	    	
  	    	g.setPaint(Color.RED);
- 	    	g.drawLine(lastX, lastYInfected, lastX+20, 930-(amountInfected/10));
+ 	    	g.drawLine(lastX, lastYInfected, lastX+8, 930-(amountInfected/10));
  	    	lastYInfected = 930-(amountInfected/10);
  	    	
  	    	g.setPaint(Color.BLACK);
- 	    	g.drawLine(lastX, lastYDead, lastX+20, 930-(amountDead/10));
+ 	    	g.drawLine(lastX, lastYDead, lastX+8, 930-(amountDead/10));
  	    	lastYDead = 930-(amountDead/10);
  	    	
  	    	g.setPaint(Color.BLUE);
- 	    	g.drawLine(lastX, lastYRecovered, lastX+20, 930-(amountRecovered/10));
- 	    	lastX = lastX + 20;
+ 	    	g.drawLine(lastX, lastYRecovered, lastX+8, 930-(amountRecovered/10));
+ 	    	lastX = lastX + 8;
  	    	lastYRecovered = 930-(amountRecovered/10);
     }
     
@@ -93,7 +93,7 @@ public class PandemicController{
         //Personen initial spawnen...
         boolean patientZeroIsSet = false;
         for(Location l : locations) {
-        	int amountPersons = getRandomNumberInRange(0, 50);
+        	int amountPersons = getRandomNumberInRange(0, AMOUNT_OF_PERSONS);
             for (int i = 0; i < amountPersons; i++) { 
                 Person p = new Person(instance.getGraphics());
                 l.presentPersons.add(p);

@@ -19,7 +19,7 @@ import static View.MainGui.instance;
 public class SimulatorConfig {
     //PROB = Wahrscheinlichkeit, Angabe in Prozent
     //Demografische Eigenschaften
-    public static int AMOUNT_OF_PERSONS = 100;
+    public static int AMOUNT_OF_PERSONS = 50;
     public static double PROB_PERSON_IS_IN_RISK_GROUP = 0.1;            //Gilt für alle Personen
     public static int AGE_FOR_RISK_GROUP = 65;                          //über 100 setzen wenn keine Risikoalter gewünscht ist
 

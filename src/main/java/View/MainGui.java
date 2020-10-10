@@ -13,6 +13,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 
 import static Controller.PandemicController.*;
 
@@ -89,8 +91,14 @@ public class MainGui extends JFrame {
 	   timeSliderContainer.add(dayDurationInMs);
 
 	   JTextPane logPanel = new JTextPane();
-	   log = logPanel;
+	   logPanel.setFont(new Font("Arial", Font.PLAIN, 13));
 	   logPanel.setEditable(false);
+	   log = logPanel;
+
+	   JScrollPane scrollPane = new JScrollPane(log);
+	   scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+	   scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	   scrollPane.setAutoscrolls(true);
 
 	   JPanel startReset = new JPanel(new GridLayout(1,2));
 	   startReset.add(start);
@@ -98,7 +106,7 @@ public class MainGui extends JFrame {
 	   buttons.add(startReset);
 	   buttons.add(settings);
 	   buttons.add(timeSliderContainer);
-	   buttons.add(logPanel);
+	   buttons.add(scrollPane);
 
 	   //ENDE
 
@@ -154,6 +162,7 @@ public class MainGui extends JFrame {
 					public void run() {
 						while (amountInfected != 0) {
 							if (Time.nextTick()) {
+								append("Tag "+Time.getCurrentDay());
 								try {
 									SwingUtilities.invokeAndWait(() -> {
 										PandemicController.refreshGrid();
@@ -260,7 +269,9 @@ public class MainGui extends JFrame {
 	public void append(String s) {
 		try {
 			Document doc = log.getDocument();
-			doc.insertString(doc.getLength(), s, null);
+			log.select(doc.getLength(), doc.getLength());
+			doc.insertString(doc.getLength(), s+"\n", null);
+			log.setAutoscrolls(true);
 		} catch(BadLocationException exc) {
 			exc.printStackTrace();
 		}
