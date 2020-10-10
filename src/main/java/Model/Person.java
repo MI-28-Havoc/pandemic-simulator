@@ -43,7 +43,12 @@ public class Person extends JPanel {
     	//Individuelle Werte ermitteln...
         visualPerson = (Graphics2D) g;
         this.age = (int) (Math.random() * 88) + 12;
-        this.inRiskGroup = (Math.random() < PROB_PERSON_IS_IN_RISK_GROUP);
+        if (age >= AGE_FOR_RISK_GROUP) {
+            this.inRiskGroup = true;
+        }
+        else {
+            this.inRiskGroup = (Math.random() < PROB_PERSON_IS_IN_RISK_GROUP);
+        }
         this.incubationPeriod = (int) (Math.random() * (MAX_INCUBATION_PERIOD_DAYS - MIN_INCUBATION_PERIOD_DAYS) + MIN_INCUBATION_PERIOD_DAYS);
         this.illnessPeriod = (int) (Math.random() * (MIN_ILLNESS_PERIOD_DAYS - MAX_ILLNESS_PERIOD_DAYS) + MAX_ILLNESS_PERIOD_DAYS);
         this.setBackground(null);
@@ -69,7 +74,8 @@ public class Person extends JPanel {
         }
         //Krankheitszeit prüfen
         if (Time.getCurrentDay() > (this.illnessAtDay + this.illnessPeriod) && this.illnessBegun) {
-            if (Math.random() < PROB_BASIC_FATALITY) {
+            int factorForRiskGroup = this.isInRiskGroup() ? 2 : 1; //Todeswahrscheinlichkeit verdoppelt bei Risikogruppe
+            if (Math.random() < PROB_BASIC_FATALITY*factorForRiskGroup) {
                 this.dead = true;
                 this.deathAtDay = Time.getCurrentDay();
                 amountDead++;

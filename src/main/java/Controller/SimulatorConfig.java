@@ -53,8 +53,8 @@ public class SimulatorConfig {
 		labelTable.put( new Integer( 10 ), new JLabel("1.0") );
 		
 		JLabel amountPersonLabel = new JLabel("Anzahl an möglichen Personen pro Feld:");		//sinnvoll?
-		JSlider amountPersons = new JSlider(JSlider.HORIZONTAL, 10, 200, AMOUNT_OF_PERSONS);
-		   amountPersons.setMajorTickSpacing(20);
+		JSlider amountPersons = new JSlider(JSlider.HORIZONTAL, 5, 75, AMOUNT_OF_PERSONS);
+		   amountPersons.setMajorTickSpacing(10);
 		   amountPersons.setMinorTickSpacing(5);
 		   amountPersons.setPaintTicks(true);
 		   amountPersons.setPaintLabels(true);

@@ -115,7 +115,7 @@ public class MainGui extends JFrame {
 	   ImageIcon alive = new ImageIcon("src/main/resources/alive.png");
 		alive.setImage(alive.getImage().getScaledInstance(27,27, Image.SCALE_DEFAULT));	
 		JLabel lblAlive = new JLabel (alive);
-		lblAlive.setText("Gesund:");
+		lblAlive.setText("Am Leben:");
 
 		ImageIcon ill = new ImageIcon("src/main/resources/ill.png");
 		ill.setImage(ill.getImage().getScaledInstance(29,29, Image.SCALE_DEFAULT));
