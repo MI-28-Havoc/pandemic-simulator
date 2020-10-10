@@ -35,9 +35,9 @@ public class PandemicController{
             }
         }
         graphPaint(instance.getGraphics());
-        //Personen auf Grid moven (wahrscheinlichkeit für moven einbauen)
+        //Personen auf Grid moven
         relocatePersons();
-        //Personen stecken andere an ihrer Location an...
+        //Personen stecken andere Personen an ihrer Location an...
         for(Location aLocation: locations) {
             if (aLocation.containsPersons())
                 aLocation.spread();
@@ -190,8 +190,8 @@ public class PandemicController{
         Time.reset();
         instance.revalidate();
         instance.repaint();
+        instance.log("Simulation zurueckgesetzt!");
         MainGui.main(null);
-        //initialPaint(instance.getGraphics()); // TODO warum geht das nicht?? kp lol xd
     }
 
     public static void refreshGrid() {

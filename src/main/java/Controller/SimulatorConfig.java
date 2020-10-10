@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
+import View.MainGui;
 import lombok.Data;
 
 import static View.MainGui.instance;
@@ -176,12 +177,14 @@ public class SimulatorConfig {
 			    PROB_OF_MOVE = move / 10;                           
 				
 				instance.setEnabled(true);
+				instance.log("Einstellungen gespeichert!");
 				frameSettings.dispose();
 			}
 		});
 		
 		dismiss.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				instance.log("Einstellungen verworfen!");
 				frameSettings.dispose();
 				instance.setEnabled(true);
 			}

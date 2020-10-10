@@ -4,8 +4,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Random;
 
 import javax.swing.*;
@@ -13,8 +11,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
 
 import static Controller.PandemicController.*;
 
@@ -23,7 +19,6 @@ import Controller.SimulatorConfig;
 import Controller.Status;
 import Controller.Time;
 import Model.Location;
-import Model.Person;
 
 
 public class MainGui extends JFrame {
@@ -158,11 +153,13 @@ public class MainGui extends JFrame {
 	   start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				start.setEnabled(false);
+				instance.log("Simulation gestartet!");
+				PandemicController.status = Status.RUNNING;
 				Thread appThread = new Thread() {
 					public void run() {
-						while (amountInfected != 0) {
+						while (amountInfected != 0 && PandemicController.status == Status.RUNNING) {
 							if (Time.nextTick()) {
-								append("Tag "+Time.getCurrentDay());
+								log("Tag "+Time.getCurrentDay());
 								try {
 									SwingUtilities.invokeAndWait(() -> {
 										PandemicController.refreshGrid();
@@ -176,8 +173,11 @@ public class MainGui extends JFrame {
 								tick();
 							}
 						}
-						PandemicController.status = Status.FINISHED;
-						System.out.println("Finished on " + Thread.currentThread() + ", Tag: "+ Time.getCurrentDay());
+
+						if (status == Status.RUNNING) {
+							instance.log("Simulation beendet am Tag " + Time.getCurrentDay());
+							PandemicController.status = Status.FINISHED;
+						}
 						PandemicController.refreshInfoPanel();
 					}
 				};
@@ -189,15 +189,12 @@ public class MainGui extends JFrame {
 		reset.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				start.setEnabled(true);
 				Thread appThread = new Thread() {
 					public void run() {
-						if (amountInfected == 0) {
-							PandemicController.resetSim();
-							
-						}
+						PandemicController.status = Status.READY;
+						PandemicController.resetSim();
+						start.setEnabled(true);
 						initialPaint(instance.getGraphics());
-						System.out.println("Simulation resetted");
 					}
 				};
 				appThread.start();
@@ -253,7 +250,9 @@ public class MainGui extends JFrame {
 		PandemicController.spawnPersons();
 		PandemicController.setPatientZero();
 		PandemicController.status = Status.READY;
+		instance.log("Simulation bereit!");
 		PandemicController.initialPaint(instance.getGraphics());
+		refreshInfoPanel();
 	}
 
 	public static int getRandomNumberInRange(int min, int max) {
@@ -266,7 +265,7 @@ public class MainGui extends JFrame {
 		return r.ints(min, (max + 1)).findFirst().getAsInt();
 	}
 
-	public void append(String s) {
+	public void log(String s) {
 		try {
 			Document doc = log.getDocument();
 			log.select(doc.getLength(), doc.getLength());
