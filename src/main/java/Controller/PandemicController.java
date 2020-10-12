@@ -142,7 +142,7 @@ public class PandemicController{
                         p.revalidate();
                         p.repaint();
                     }
-                    else if (p.getDeathAtDay() + 3 > Time.getCurrentDay()) {
+                    else if (p.getDeathAtDay() + 10 > Time.getCurrentDay()) {
                         //Tote sollen nach 3 Tagen nicht mehr erscheinen
                         p.revalidate();
                         p.repaint();
@@ -195,12 +195,6 @@ public class PandemicController{
     }
 
     public static void refreshGrid() {
-        /*for(Location aLocation: locations) {
-            for(Person aPerson: aLocation.presentPersons) {
-                aPerson.refreshComponent();
-            }
-        }*/
-
         instance.grid.revalidate();
         instance.grid.repaint();
         for (Location l : locations) {

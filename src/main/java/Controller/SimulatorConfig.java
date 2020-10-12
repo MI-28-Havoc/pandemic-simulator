@@ -52,14 +52,14 @@ public class SimulatorConfig {
 		labelTable.put( new Integer( 5 ), new JLabel("0.5") );
 		labelTable.put( new Integer( 10 ), new JLabel("1.0") );
 		
-		JLabel amountPersonLabel = new JLabel("Anzahl an möglichen Personen pro Feld:");		//sinnvoll?
+		JLabel amountPersonLabel = new JLabel("Anzahl an möglichen Personen pro Feld:");
 		JSlider amountPersons = new JSlider(JSlider.HORIZONTAL, 5, 75, AMOUNT_OF_PERSONS);
 		   amountPersons.setMajorTickSpacing(10);
 		   amountPersons.setMinorTickSpacing(5);
 		   amountPersons.setPaintTicks(true);
 		   amountPersons.setPaintLabels(true);
 		   frameSettings.getContentPane().add(amountPersonLabel);   
-			frameSettings.getContentPane().add(amountPersons);
+		   frameSettings.getContentPane().add(amountPersons);
 		   
 	   JLabel probRiskGroupLabel = new JLabel("Wahrscheinlichkeit, dass eine Person in der Risikogruppe ist:");
 		JSlider probRiskGroup = new JSlider(JSlider.HORIZONTAL, 0, 10, (int)(PROB_PERSON_IS_IN_RISK_GROUP * 10));
@@ -151,7 +151,6 @@ public class SimulatorConfig {
 		
 		JButton save = new JButton("Speichern");
 		JButton dismiss = new JButton("Abbrechen");
-		//button reset?
 		
 		frameSettings.add(save,-1);
 		frameSettings.add(dismiss, -1);

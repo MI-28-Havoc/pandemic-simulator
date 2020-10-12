@@ -1,10 +1,5 @@
 package Model;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.util.Random;
@@ -16,16 +11,14 @@ import Controller.Time;
 import static Controller.PandemicController.*;
 import static Controller.SimulatorConfig.*;
 
-@Data
 public class Person extends JPanel {
     int posX;
     int posY;
     Graphics2D visualPerson;
     int age;
 
-    @Setter(AccessLevel.NONE)
     boolean infected; //Wenn true, dann noch nicht erkrankt, sondern Beginn Inkubationszeit
-    boolean recovered = false; //Damit auch Immun ?
+    boolean recovered = false; //Damit auch immun
     boolean dead = false;
     boolean inRiskGroup = false;
     int incubationPeriod;   //Für jede Person individuell
@@ -72,6 +65,7 @@ public class Person extends JPanel {
             this.illnessBegun = true;
             illnessAtDay = Time.getCurrentDay();
         }
+
         //Krankheitszeit prüfen
         if (Time.getCurrentDay() > (this.illnessAtDay + this.illnessPeriod) && this.illnessBegun) {
             int factorForRiskGroup = this.isInRiskGroup() ? 2 : 1; //Todeswahrscheinlichkeit verdoppelt bei Risikogruppe
@@ -124,23 +118,25 @@ public class Person extends JPanel {
             visualPerson.setColor(Color.GREEN);
         }
         visualPerson.fill(new Ellipse2D.Double(posX, posY, CIRCLE_WIDTH, CIRCLE_HEIGHT));
-        //visualPerson.translate(x,y);
     }
 
-    public void refreshComponent() {
-        //obsolet
-        if (this.infected) {
-            visualPerson.setColor(Color.RED);
-        } else if (this.recovered) {
-            visualPerson.setColor(Color.BLUE);
-        } else if (this.dead) {
-            visualPerson.setColor(Color.BLACK);
-        }
-        else {
-            visualPerson.setColor(Color.GREEN);
-        }
-        this.setBounds(posX, posY, CIRCLE_WIDTH, CIRCLE_HEIGHT);
-        this.revalidate();
-        this.repaint();
+    public boolean isInfected() {
+        return infected;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public boolean isInRiskGroup() {
+        return inRiskGroup;
+    }
+
+    public int getDeathAtDay() {
+        return deathAtDay;
+    }
+
+    public boolean isRecovered() {
+        return recovered;
     }
 }

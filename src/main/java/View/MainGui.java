@@ -35,7 +35,6 @@ public class MainGui extends JFrame {
 	   	getContentPane().add(grid);
 	   	grid.setLayout(new GridLayout(gridCols, gridRows, 1, 1));
 	   	grid.setBackground(Color.black); //= Farbe der Cellborder
-	   	//panel_2.addComponentListener(this);
 	  
 	   for (int i = 1; i <= gridCols; i++) {
            for (int j = 1; j <= gridRows; j++) {
@@ -66,7 +65,6 @@ public class MainGui extends JFrame {
 	   JPanel valuesAndButtonsContainer = new JPanel();
 	   valuesAndButtonsContainer.setLayout(new GridLayout(2, 1));
 
-	   //START
 	   JPanel buttons = new JPanel();
 	   buttons.setLayout(new GridLayout(2,2));
 
@@ -102,8 +100,6 @@ public class MainGui extends JFrame {
 	   buttons.add(settings);
 	   buttons.add(timeSliderContainer);
 	   buttons.add(scrollPane);
-
-	   //ENDE
 
 	   valuesAndButtonsContainer.add(buttons);
 	   overview.add(valuesAndButtonsContainer);
@@ -170,7 +166,13 @@ public class MainGui extends JFrame {
 								} catch (InvocationTargetException e) {
 									e.printStackTrace();
 								}
-								tick();
+
+								try {
+									tick();
+								}
+								catch (java.util.ConcurrentModificationException e) {
+									e.printStackTrace();
+								}
 							}
 						}
 

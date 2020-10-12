@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.swing.JPanel;
 
 import static Controller.SimulatorConfig.*;
-import static Controller.PandemicController.amountInfected;
 
 public class Location extends JPanel{
     public ArrayList<Person> presentPersons = new ArrayList<>();
