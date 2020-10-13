@@ -133,11 +133,11 @@ public class SimulatorConfig {
 		
 		JLabel probMoveLabel = new JLabel("Wahrscheinlichkeit, dass eine Person sich an einem Tag bewegt:");
 		JSlider probMove = new JSlider(JSlider.HORIZONTAL, 0, 10, (int)(PROB_OF_MOVE * 10));
-		probRiskGroup.setMajorTickSpacing(5);
-		probRiskGroup.setMinorTickSpacing(1);
-		probRiskGroup.setLabelTable( labelTable );
-		probRiskGroup.setPaintTicks(true);//not showing
-		probRiskGroup.setPaintLabels(true);
+		probMove.setMajorTickSpacing(5);
+		probMove.setMinorTickSpacing(1);
+		probMove.setLabelTable( labelTable );
+		probMove.setPaintTicks(true);
+		probMove.setPaintLabels(true);
 		frameSettings.getContentPane().add(probMoveLabel);   
 		frameSettings.getContentPane().add(probMove);
 		
