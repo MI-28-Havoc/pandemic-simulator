@@ -12,9 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
-import View.MainGui;
-import lombok.Data;
-
 import static View.MainGui.instance;
 
 public class SimulatorConfig {

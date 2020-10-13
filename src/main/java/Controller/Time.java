@@ -1,7 +1,5 @@
 package Controller;
 
-import lombok.NoArgsConstructor;
-
 public class Time {
     static int currentDay = 0;
     static long timer = 0;
